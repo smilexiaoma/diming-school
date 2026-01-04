@@ -42,17 +42,7 @@
           </view>
         </view>
       </view>
-
-      <!-- 菜单列表 -->
-      <view class="menu-list">
-        <view class="menu-item" v-for="(item, index) in menuList" :key="index" @click="handleMenu(item)">
-          <text class="menu-name">{{ item.name }}</text>
-          <view class="menu-right">
-            <text v-if="item.value" class="menu-value">{{ item.value }}</text>
-            <uni-icons type="right" size="12" color="#999999"></uni-icons>
-          </view>
-        </view>
-      </view>
+ 
 
       <!-- 退出登录按钮 -->
       <view class="logout-section">
@@ -99,10 +89,7 @@ export default {
         { name: '收益中心', icon: 'wallet', iconColor: '#FF5722', bgColor: '#FBE9E7', path: '/pages/mine/wallet/index' }
       ],
       tagList: ['学习', '运动', '音乐', '电影', '旅行', '美食'],
-      menuList: [
-        { name: '账号与安全', path: '/pages/mine/security' },
-        { name: '关于我们', path: '/pages/mine/about' }
-      ]
+      
     }
   },
   computed: {

@@ -9,14 +9,25 @@ const getData = (req, res) => {
       { id: 2, image: 'https://iph.href.lu/750x300?text=轮播图2', url: '' },
       { id: 3, image: 'https://iph.href.lu/750x300?text=轮播图3', url: '' }
     ],
-    // 导航分类
+    // 导航分类（扩展到18个以填充3行×6列）
     navList: [
-      { id: 1, name: '秘密校园', icon: '', url: '' },
-      { id: 2, name: '官方外卖代码', icon: '', url: '' },
-      { id: 3, name: '表白墙', icon: '', url: '' },
-      { id: 4, name: '失物招领', icon: '', url: '' },
-      { id: 5, name: '互助群', icon: '', url: '' },
-      { id: 6, name: '投票', icon: '', url: '/pages/vote/index' }
+      { id: 1, name: '秘密树洞的一个', icon: '', url: '/pages/post/index' },
+      { id: 2, name: '官方的大大外卖', icon: '', url: '/pages/errand/index' },
+      { id: 3, name: '表白墙哦哦哦哦', icon: '', url: '/pages/love/index' },
+      { id: 4, name: '失物招领阿萨德', icon: '', url: '/pages/idle/index' },
+      { id: 5, name: '互助群', icon: '', url: '/pages/help/index' },
+      { id: 6, name: '投票', icon: '', url: '/pages/vote/index' },
+      { id: 7, name: '校园跑腿', icon: '', url: '/pages/errand/index' },
+      { id: 8, name: '闲置习交流市场', icon: '', url: '/pages/idle/index' },
+      { id: 9, name: '社团活动', icon: '', url: '' },
+      { id: 10, name: '学习交流习交流', icon: '', url: '' },
+      { id: 11, name: '兼职信息习交流', icon: '', url: '' },
+      { id: 12, name: '校园资讯', icon: '', url: '' },
+      { id: 13, name: '运动打卡', icon: '', url: '' },
+      { id: 14, name: '美食推荐习交流', icon: '', url: '' },
+      { id: 15, name: '租房信息', icon: '', url: '' },
+      { id: 16, name: '考研考习交流公', icon: '', url: '' },
+      { id: 17, name: '技能分享', icon: '', url: '' }
     ],
     // 热榜
     hotList: [

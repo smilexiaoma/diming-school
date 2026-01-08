@@ -36,10 +36,10 @@
           class="content-input"
           v-model="content"
           placeholder="请详细描述您的问题或建议..."
-          maxlength="500"
+          maxlength="10000"
           :show-count="true"
         ></textarea>
-        <text class="word-count">{{ content.length }}/500</text>
+        <text class="word-count">{{ content.length }}/10000</text>
       </view>
 
       <!-- 上传图片 -->
@@ -70,7 +70,7 @@
     </scroll-view>
 
     <!-- 提交按钮 -->
-    <view class="submit-section safe-area-bottom">
+    <view class="submit-section">
       <view class="submit-btn" @click="handleSubmit">提交反馈</view>
     </view>
   </view>
@@ -273,8 +273,7 @@ export default {
   right: 0;
   bottom: 0;
   padding: 20rpx 24rpx;
-  padding-right: calc(24rpx + env(safe-area-inset-right));
-  padding-left: calc(24rpx + env(safe-area-inset-left));
+  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
   background-color: #FFFFFF;
   box-sizing: border-box;
   .submit-btn {

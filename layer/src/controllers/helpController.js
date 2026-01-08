@@ -110,13 +110,13 @@ const getDetail = (req, res) => {
     nickname: '张三',
     status: '进行中',
     isFollowed: false,
-    // 出价记录
-    bidHistory: Array(5).fill(null).map((_, i) => ({
+    // 出价记录（只返回最新5条）
+    bidList: Array(5).fill(null).map((_, i) => ({
       id: 'bid_' + i,
       avatar: 'https://iph.href.lu/100x100?text=头像',
-      nickname: '出价者' + (i + 1),
+      nickname: ['昵称1', '昵称', '出价者' + (i + 1)][i % 3],
       price: 235 - i * 10,
-      time: (i + 1) + '分钟前'
+      time: ['52分钟前', '1小时前', (i + 1) + '小时前'][i < 2 ? i : 2]
     })),
     userInfo: {
       id: 'help_user_1',
@@ -164,9 +164,25 @@ const bid = (req, res) => {
   }, '出价成功')
 }
 
+// 获取出价记录列表
+const getBidList = (req, res) => {
+  const { id } = req.params
+
+  const list = Array(15).fill(null).map((_, i) => ({
+    id: 'bid_' + i,
+    avatar: 'https://iph.href.lu/100x100?text=头像',
+    nickname: ['昵称1', '昵称', '出价者' + (i + 1)][i % 3],
+    price: 235 - i * 10,
+    time: ['52分钟前', '1小时前', (i + 1) + '小时前'][i < 2 ? i : 2]
+  }))
+
+  successResponse(res, { list })
+}
+
 module.exports = {
   getList,
   getDetail,
   saveOrUpdate,
-  bid
+  bid,
+  getBidList
 }

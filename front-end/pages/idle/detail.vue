@@ -65,7 +65,7 @@
       </view>
     </scroll-view>
 
-    <view class="bottom-bar safe-area-bottom">
+    <view class="bottom-bar">
       <view class="btn-chat" @click="handleChat">私聊</view>
       <view class="btn-want" @click="handleWant">我想要</view>
     </view>
@@ -248,7 +248,7 @@ export default {
   .user-avatar { width: 80rpx; height: 80rpx; border-radius: 50%; margin-right: 16rpx; }
   .user-info { flex: 1; .user-name { display: block; font-size: 28rpx; color: #333; } .user-time { font-size: 24rpx; color: #999; } }
 }
-.bottom-bar { position: fixed; left: 0; right: 0; bottom: 0; display: flex; gap: 24rpx; padding: 16rpx 24rpx; background: #FFF; box-sizing: content-box;
+.bottom-bar { position: fixed; left: 0; right: 0; bottom: 0; display: flex; gap: 24rpx; padding-top: 16rpx; padding-left: 24rpx; padding-right: 24rpx; padding-bottom: calc(16rpx + env(safe-area-inset-bottom)); background: #FFF; box-sizing: content-box;
   .btn-chat { flex: 1; height: 88rpx; border: 1rpx solid #007AFF; border-radius: 44rpx; font-size: 30rpx; color: #007AFF; display: flex; align-items: center; justify-content: center; }
   .btn-want { flex: 1; height: 88rpx; background: #007AFF; border-radius: 44rpx; font-size: 30rpx; color: #FFF; display: flex; align-items: center; justify-content: center; }
 }

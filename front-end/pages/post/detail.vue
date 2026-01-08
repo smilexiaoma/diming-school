@@ -118,7 +118,7 @@
     </scroll-view>
 
     <!-- 底部操作栏 -->
-    <view class="bottom-bar safe-area-bottom">
+    <view class="bottom-bar">
       <input class="comment-input" placeholder="写评论..." @focus="showCommentInput" />
       <view class="action-btns">
         <view class="action-item" @click="handleLike">
@@ -360,7 +360,7 @@ export default {
     .comment-like { display: flex; flex-direction: column; align-items: center; padding-left: 16rpx; .like-count { font-size: 22rpx; color: #999; } }
   }
 }
-.bottom-bar { position: fixed; left: 0; right: 0; bottom: 0; display: flex; align-items: center; padding: 16rpx 24rpx; background: #FFF; box-shadow: 0 -2rpx 12rpx rgba(0,0,0,0.05); box-sizing: content-box;
+.bottom-bar { position: fixed; left: 0; right: 0; bottom: 0; display: flex; align-items: center; padding-top: 16rpx; padding-left: 24rpx; padding-right: 24rpx; padding-bottom: calc(16rpx + env(safe-area-inset-bottom)); background: #FFF; box-shadow: 0 -2rpx 12rpx rgba(0,0,0,0.05); box-sizing: content-box;
   .comment-input { flex: 1; height: 72rpx; padding: 0 24rpx; background: #F5F5F5; border-radius: 36rpx; font-size: 28rpx; }
   .action-btns { display: flex; margin-left: 20rpx; .action-item { display: flex; flex-direction: column; align-items: center; margin-left: 24rpx; text { font-size: 20rpx; color: #999; } } }
 }

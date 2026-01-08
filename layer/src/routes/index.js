@@ -86,6 +86,7 @@ router.get('/help/list', helpController.getList)
 router.get('/help/detail/:id', helpController.getDetail)
 router.post('/help/saveOrUpdate', helpController.saveOrUpdate)
 router.post('/help/bid', helpController.bid)
+router.get('/help/bidList/:id', helpController.getBidList)
 
 // ==================== 消息 ====================
 router.get('/message/list', messageController.getList)

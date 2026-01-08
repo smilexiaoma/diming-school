@@ -120,6 +120,13 @@
       }
     },
     {
+      "path": "pages/help/bid-list",
+      "style": {
+        "navigationBarTitleText": "出价记录",
+        "navigationStyle": "custom"
+      }
+    },
+    {
       "path": "pages/publish/post",
       "style": {
         "navigationBarTitleText": "发布帖子",

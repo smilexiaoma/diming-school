@@ -54,7 +54,7 @@
           </view>
         </view>
         <view class="bid-list">
-          <view v-for="(bid, index) in data.bidList" :key="index" class="bid-item">
+          <view v-for="(bid, index) in data.bidList.slice(0, 3)" :key="index" class="bid-item">
             <image class="bid-avatar" :src="bid.avatar" mode="aspectFill"></image>
             <text class="bid-name">{{ bid.nickname }}</text>
             <text class="bid-time">{{ bid.time }}</text>
@@ -110,7 +110,7 @@
     </scroll-view>
 
     <!-- 底部出价按钮 -->
-    <view class="bottom-bar safe-area-bottom">
+    <view class="bottom-bar">
       <view class="btn-bid" @click="handleBid">出 价</view>
     </view>
   </view>
@@ -236,7 +236,9 @@ export default {
       }
     },
     viewAllBids() {
-      uni.showToast({ title: '查看全部出价记录', icon: 'none' })
+      uni.navigateTo({
+        url: `/pages/help/bid-list?id=${this.helpId}`
+      })
     },
     previewImage(index) {
       uni.previewImage({
@@ -563,7 +565,10 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  padding: 16rpx 24rpx;
+  padding-top: 16rpx;
+  padding-left: 24rpx;
+  padding-right: 24rpx;
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
   background-color: #FFFFFF;
   box-shadow: 0 -2rpx 12rpx rgba(0, 0, 0, 0.05);
   box-sizing: content-box;

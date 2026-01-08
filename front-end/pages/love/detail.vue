@@ -174,7 +174,7 @@
     </scroll-view>
 
     <!-- 底部查看联系方式 -->
-    <view class="bottom-bar safe-area-bottom">
+    <view class="bottom-bar">
       <view class="contact-btn" @click="viewContact">
         <text class="contact-text">查看联系方式</text>
         <uni-icons type="right" size="14" color="#999999"></uni-icons>
@@ -552,7 +552,10 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  padding: 16rpx 24rpx;
+  padding-top: 16rpx;
+  padding-left: 24rpx;
+  padding-right: 24rpx;
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
   background-color: #FFFFFF;
   box-shadow: 0 -2rpx 12rpx rgba(0, 0, 0, 0.05);
   box-sizing: content-box;

@@ -23,7 +23,7 @@ export const authApi = {
  */
 export const homeApi = {
   // 获取首页数据（轮播图、热榜、公告、导航等）
-  getData: () => get('/home/data')
+  getData: (params) => get('/home/data', params)
 }
 
 /**
@@ -134,7 +134,10 @@ export const helpApi = {
   saveOrUpdate: (data) => post('/help/saveOrUpdate', data),
 
   // 出价
-  bid: (data) => post('/help/bid', data)
+  bid: (data) => post('/help/bid', data),
+
+  // 获取出价记录列表
+  getBidList: (id) => get(`/help/bidList/${id}`)
 }
 
 /**

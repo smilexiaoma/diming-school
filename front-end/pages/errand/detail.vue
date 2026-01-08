@@ -74,7 +74,7 @@
       </view>
     </scroll-view>
 
-    <view class="bottom-bar safe-area-bottom">
+    <view class="bottom-bar">
       <view class="btn-grab" @click="handleGrab">立即抢单</view>
     </view>
   </view>
@@ -238,7 +238,7 @@ export default {
   .user-info { flex: 1; .user-name { display: block; font-size: 28rpx; color: #333; } .user-time { font-size: 24rpx; color: #999; } }
   .contact-btn { padding: 12rpx 32rpx; font-size: 26rpx; color: #007AFF; border: 1rpx solid #007AFF; border-radius: 24rpx; }
 }
-.bottom-bar { position: fixed; left: 0; right: 0; bottom: 0; padding: 16rpx 24rpx; background: #FFF; box-sizing: content-box;
+.bottom-bar { position: fixed; left: 0; right: 0; bottom: 0; padding-top: 16rpx; padding-left: 24rpx; padding-right: 24rpx; padding-bottom: calc(16rpx + env(safe-area-inset-bottom)); background: #FFF; box-sizing: content-box;
   .btn-grab { height: 88rpx; background: #007AFF; border-radius: 44rpx; font-size: 32rpx; color: #FFF; display: flex; align-items: center; justify-content: center; }
 }
 </style>

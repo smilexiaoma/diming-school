@@ -69,12 +69,16 @@
           v-for="(item, index) in groupMessages"
           :key="index"
           class="message-item"
+          :class="{ mine: item.isMine }"
         >
           <!-- 顶部：头像、头衔、昵称（水平排列） -->
+          <!-- 收到的消息：头像 头衔 昵称 -->
+          <!-- 我的消息：头衔 昵称 头像 -->
           <view class="msg-header">
-            <image class="msg-avatar" :src="item.avatar" mode="aspectFill" />
+            <image v-if="!item.isMine" class="msg-avatar" :src="item.avatar" mode="aspectFill" />
             <view class="msg-badge" v-if="item.badge">{{ item.badge }}</view>
-            <text class="msg-nickname">昵称：{{ item.nickname }}</text>
+            <text class="msg-nickname">{{ item.nickname }}</text>
+            <image v-if="item.isMine" class="msg-avatar" :src="item.avatar" mode="aspectFill" />
           </view>
 
           <!-- 消息内容（带序号） -->
@@ -520,7 +524,8 @@ export default {
         avatar: 'https://iph.href.lu/100x100?text=我',
         badge: '头衔', // 实际应从用户信息获取
         content: content,
-        time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
+        time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }),
+        isMine: true
       }
       this.groupMessages.push(newMessage)
 
@@ -763,17 +768,13 @@ export default {
           font-weight: 500;
           flex: 1;
           text-align: right;
-          padding: 4rpx 16rpx;
-          border-radius: 8rpx;
 
           &.gender-male {
             color: #4A90E2;
-            background-color: #E8F4FF;
           }
 
           &.gender-female {
             color: #FF6B9D;
-            background-color: #FFE8F0;
           }
         }
 
@@ -990,6 +991,22 @@ export default {
   .message-item {
     margin-bottom: 32rpx;
 
+    // 我的消息：右对齐
+    &.mine {
+      .msg-header {
+        justify-content: flex-end;
+      }
+
+      .msg-badge {
+        margin-right: 0;
+        margin-left: 12rpx;
+      }
+
+      .msg-bubble {
+        margin-left: auto;
+      }
+    }
+
     // 顶部：头像、头衔、昵称（水平排列）
     .msg-header {
       display: flex;
@@ -1000,8 +1017,17 @@ export default {
         width: 64rpx;
         height: 64rpx;
         border-radius: 50%;
-        margin-right: 12rpx;
         flex-shrink: 0;
+
+        // 收到的消息：头像在左侧，右边距
+        &:first-child {
+          margin-right: 12rpx;
+        }
+
+        // 我的消息：头像在右侧，左边距
+        &:last-child {
+          margin-left: 12rpx;
+        }
       }
 
       .msg-badge {
@@ -1018,7 +1044,6 @@ export default {
       .msg-nickname {
         font-size: 24rpx;
         color: #666666;
-        flex: 1;
       }
     }
 

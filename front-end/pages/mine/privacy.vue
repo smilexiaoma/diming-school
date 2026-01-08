@@ -180,8 +180,8 @@ export default {
           title: '谁可以私信我',
           options: [
             { label: '所有人', value: 'all' },
-            { label: '仅我关注的人', value: 'following' },
-            { label: '相互关注的人', value: 'mutual' },
+            { label: '仅我订阅的人', value: 'following' },
+            { label: '相互订阅的人', value: 'mutual' },
             { label: '关闭私信', value: 'none' }
           ]
         },
@@ -189,7 +189,7 @@ export default {
           title: '谁可以评论我的内容',
           options: [
             { label: '所有人', value: 'all' },
-            { label: '仅我关注的人', value: 'following' },
+            { label: '仅我订阅的人', value: 'following' },
             { label: '关闭评论', value: 'none' }
           ]
         },

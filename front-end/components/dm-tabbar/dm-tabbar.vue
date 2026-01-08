@@ -128,48 +128,37 @@ export default {
       })
     },
     goPublish() {
-      // 根据当前页面决定跳转到哪个发布页
       const pages = getCurrentPages()
       const currentPage = pages[pages.length - 1]
       const route = '/' + currentPage.route
 
-      // 如果在主页，弹出发布选择器
+      // 如果在主页，根据当前tab跳转
       if (route === '/pages/index/index') {
-        this.showPublishMenu()
+        const currentTab = getApp().globalData?.currentIndexTab || '最新'
+        const tabPublishMap = {
+          '最新': '/pages/publish/post',
+          '帖子': '/pages/publish/post',
+          '投票': '/pages/publish/vote',
+          '闲置': '/pages/publish/idle',
+          '跑腿': '/pages/publish/errand',
+          '恋爱': '/pages/publish/love',
+          '拍卖': '/pages/publish/help',
+          '互助群': '/pages/publish/post'
+        }
+        const publishUrl = tabPublishMap[currentTab] || '/pages/publish/post'
+        uni.navigateTo({ url: publishUrl })
         return
       }
 
       // 页面路径到发布页面的映射
       const publishMap = {
-        '/pages/help/index': '/pages/publish/help',       // 互助(拍卖) -> 发布拍卖
-        '/pages/errand/index': '/pages/publish/errand',   // 跑腿 -> 发布跑腿
-        '/pages/idle/index': '/pages/publish/idle'        // 闲置 -> 发布闲置
+        '/pages/help/index': '/pages/publish/help',
+        '/pages/errand/index': '/pages/publish/errand',
+        '/pages/idle/index': '/pages/publish/idle'
       }
 
-      const publishUrl = publishMap[route]
-
-      if (publishUrl) {
-        uni.navigateTo({ url: publishUrl })
-      } else {
-        // 消息页和我的页面，显示发布类型选择
-        this.showPublishMenu()
-      }
-    },
-    showPublishMenu() {
-      uni.showActionSheet({
-        itemList: ['发布帖子', '发布跑腿', '发布拍卖', '发布闲置', '发布投票', '发布交友'],
-        success: (res) => {
-          const urls = [
-            '/pages/publish/post',
-            '/pages/publish/errand',
-            '/pages/publish/help',
-            '/pages/publish/idle',
-            '/pages/publish/vote',
-            '/pages/publish/love'
-          ]
-          uni.navigateTo({ url: urls[res.tapIndex] })
-        }
-      })
+      const publishUrl = publishMap[route] || '/pages/publish/post'
+      uni.navigateTo({ url: publishUrl })
     }
   }
 }

@@ -75,7 +75,7 @@
           <text class="user-name">{{ data.nickname }}</text>
           <text class="user-time">{{ data.time }}</text>
         </view>
-        <view class="follow-btn" :class="{ followed: data.isFollowed }" @click="handleFollow">{{ data.isFollowed ? '已关注' : '关注' }}</view>
+        <view class="follow-btn" :class="{ followed: data.isFollowed }" @click="handleFollow">{{ data.isFollowed ? '已订阅' : '订阅' }}</view>
       </view>
     </scroll-view>
 

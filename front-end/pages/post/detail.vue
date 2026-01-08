@@ -45,7 +45,7 @@
           <text class="tag-item pinned" v-if="postData.isPinned">置顶</text>
           <text class="tag-item announcement" v-if="postData.isAnnouncement">公告</text>
         </view>
-        <view class="follow-btn" @click="handleFollow">{{ postData.isFollowed ? '已关注' : '关注' }}</view>
+        <view class="follow-btn" @click="handleFollow">{{ postData.isFollowed ? '已订阅' : '订阅' }}</view>
       </view>
 
       <!-- 帖子内容 -->

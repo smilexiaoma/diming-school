@@ -37,10 +37,7 @@
         <view class="price-right">
           <text class="want-count">{{ data.wantCount }}人想要</text>
           <!-- 管理按钮 -->
-          <view class="admin-btn" v-if="isAdmin" @click="showAdminMenu = true">
-            <uni-icons type="settings" size="16" color="#FFFFFF"></uni-icons>
-            <text>管理</text>
-          </view>
+          <dm-manage-btn :show="isAdmin" @click="showAdminMenu = true" />
         </view>
       </view>
 

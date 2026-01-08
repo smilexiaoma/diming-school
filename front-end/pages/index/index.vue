@@ -18,6 +18,7 @@
     <scroll-view
       class="scroll-container"
       scroll-y
+      :scroll-into-view="scrollIntoView"
       :style="{ height: actualScrollHeight + 'px' }"
       @scrolltolower="loadMore"
     >
@@ -25,7 +26,7 @@
       <dm-swiper :list="bannerList" @click="handleBannerClick" />
 
       <!-- 导航分类 -->
-      <dm-nav :list="navList" @click="handleNavClick" @more="goNavMore" />
+      <dm-nav v-if="currentTabName === '最新'" :list="navList" @click="handleNavClick" @more="goNavMore" />
 
       <!-- 今日热榜 -->
       <view class="hot-section">
@@ -67,19 +68,126 @@
         <view
           v-for="(item, index) in groupMessages"
           :key="index"
-          :class="['message-item', { 'mine': item.isSelf }]"
+          class="message-item"
         >
-          <image v-if="!item.isSelf" class="msg-avatar" :src="item.avatar" mode="aspectFill" />
-          <view class="msg-bubble">
-            <text class="msg-text">{{ item.content }}</text>
+          <!-- 顶部：头像、头衔、昵称（水平排列） -->
+          <view class="msg-header">
+            <image class="msg-avatar" :src="item.avatar" mode="aspectFill" />
+            <view class="msg-badge" v-if="item.badge">{{ item.badge }}</view>
+            <text class="msg-nickname">昵称：{{ item.nickname }}</text>
           </view>
-          <image v-if="item.isSelf" class="msg-avatar" :src="item.avatar" mode="aspectFill" />
+
+          <!-- 消息内容（带序号） -->
+          <view class="msg-bubble">
+            <view class="msg-content">
+              <text class="msg-number">{{ index + 1 }}、</text>
+              <text class="msg-text" v-if="item.content">{{ item.content }}</text>
+            </view>
+
+            <!-- 图片列表 -->
+            <view class="msg-images" v-if="item.images && item.images.length > 0">
+              <image
+                v-for="(img, imgIndex) in item.images"
+                :key="imgIndex"
+                class="msg-image"
+                :src="img"
+                mode="aspectFill"
+                @click="previewImage(item.images, imgIndex)"
+              />
+            </view>
+          </view>
+
+          <!-- 时间（居中） -->
+          <text class="msg-time">{{ item.time }}</text>
         </view>
         <!-- 底部留白 -->
-        <view class="message-list-bottom"></view>
+        <view id="msg-bottom" class="message-list-bottom"></view>
+      </view>
+
+      <!-- 投票列表 -->
+      <view v-else-if="currentTabName === '投票'" class="vote-list">
+        <view
+          v-for="(item, index) in postList"
+          :key="index"
+          class="vote-card"
+          @click="goPostDetail(item)"
+        >
+          <text class="vote-title">{{ truncateText(item.title || item.content, 200) }}</text>
+
+          <!-- 文字投票 -->
+          <view v-if="item.voteType === 'text' && item.options" class="vote-options">
+            <view
+              v-for="(opt, optIdx) in item.options"
+              :key="optIdx"
+              class="vote-option"
+            >
+              <view class="option-content">
+                <text class="option-text">{{ opt.text }}</text>
+                <text class="option-count">{{ opt.count || 0 }}</text>
+              </view>
+              <view class="option-progress" :style="{ width: (opt.percent || 0) + '%' }"></view>
+              <text class="option-percent">{{ (opt.percent || 0).toFixed(2) }}%</text>
+            </view>
+          </view>
+
+          <!-- 图片投票 -->
+          <view v-else-if="item.voteType === 'image' && item.options" class="vote-images">
+            <view
+              v-for="(opt, optIdx) in item.options.slice(0, 2)"
+              :key="optIdx"
+              class="vote-image-item"
+            >
+              <image class="vote-image" :src="opt.image" mode="aspectFill"></image>
+              <text class="image-count">{{ opt.count || 0 }}</text>
+              <view class="image-progress" :style="{ width: (opt.percent || 0) + '%' }"></view>
+              <text class="image-desc">{{ opt.text }}</text>
+            </view>
+          </view>
+
+          <view class="vote-footer">
+            <view class="vote-info">
+              <text class="vote-deadline">{{ item.deadline || item.time }}</text>
+              <text class="vote-count">{{ item.viewCount || item.totalVotes || 0 }}人吃瓜</text>
+            </view>
+            <view class="vote-meta">
+              <text v-if="item.forumName" class="vote-forum">{{ item.forumName }}</text>
+              <view class="vote-user">
+                <image class="user-avatar" :src="item.avatar || 'https://iph.href.lu/100x100?text=头像'" mode="aspectFill"></image>
+                <text class="user-name">昵称：{{ item.nickname || '匿名' }}</text>
+                <text class="vote-time">{{ item.time }}</text>
+              </view>
+            </view>
+          </view>
+        </view>
       </view>
 
       <!-- 帖子列表 -->
+      <view v-else-if="currentTabName === '恋爱'" class="love-grid">
+        <view
+          v-for="(item, index) in postList"
+          :key="index"
+          class="love-item"
+          @click="goPostDetail(item)"
+        >
+          <image class="love-image" :src="item.photo || '/static/default-avatar.png'" mode="aspectFill" />
+          <view class="love-like">
+            <text class="love-like-icon">♥</text>
+            <text class="love-like-count">{{ item.likeCount || 0 }}</text>
+          </view>
+          <view class="love-info">
+            <view class="love-row">
+              <text class="info-birth">{{ item.birth || '未填写' }}</text>
+              <text class="info-height">{{ item.height || '未填写' }}</text>
+              <text class="info-gender" :class="item.gender === '男' ? 'gender-male' : 'gender-female'">{{ item.gender || '未填写' }}</text>
+            </view>
+            <view class="love-row">
+              <text class="info-secondary">{{ item.education || '未填写' }}</text>
+              <text class="info-secondary">{{ item.status || '未填写' }}</text>
+              <text class="info-secondary">{{ item.location || '未填写' }}</text>
+            </view>
+          </view>
+        </view>
+      </view>
       <view v-else class="post-list">
         <dm-card
           v-for="(item, index) in postList"
@@ -202,7 +310,8 @@ export default {
       groupMessages: [],
       groupInputText: '',
       filterValue: {},
-      showFilter: false
+      showFilter: false,
+      scrollIntoView: ''
     }
   },
   computed: {
@@ -389,6 +498,9 @@ export default {
       try {
         const data = await groupApi.getMessages()
         this.groupMessages = data.list || []
+        this.$nextTick(() => {
+          this.scrollToBottom()
+        })
       } catch (e) {
         console.error('加载群消息失败', e)
       }
@@ -406,11 +518,15 @@ export default {
         id: Date.now(),
         nickname: '我',
         avatar: 'https://iph.href.lu/100x100?text=我',
+        badge: '头衔', // 实际应从用户信息获取
         content: content,
-        time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }),
-        isSelf: true
+        time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
       }
       this.groupMessages.push(newMessage)
+
+      this.$nextTick(() => {
+        this.scrollToBottom()
+      })
 
       try {
         await groupApi.sendMessage({ content: content })
@@ -424,6 +540,12 @@ export default {
         }
       }
     },
+    scrollToBottom() {
+      this.scrollIntoView = ''
+      this.$nextTick(() => {
+        this.scrollIntoView = 'msg-bottom'
+      })
+    },
     chooseImage() {
       uni.chooseImage({
         count: 1,
@@ -434,6 +556,16 @@ export default {
           // 这里可以上传图片并发送
           uni.showToast({ title: '图片功能开发中', icon: 'none' })
         }
+      })
+    },
+    truncateText(text, maxLength) {
+      if (!text) return ''
+      return text.length > maxLength ? text.substring(0, maxLength) + '...' : text
+    },
+    previewImage(images, current) {
+      uni.previewImage({
+        urls: images,
+        current: current
       })
     }
   }
@@ -554,41 +686,415 @@ export default {
   padding-bottom: 20rpx;
 }
 
+.love-grid {
+  padding: 20rpx 24rpx;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+
+  .love-item {
+    width: 340rpx;
+    background-color: #FFFFFF;
+    border-radius: 16rpx;
+    overflow: hidden;
+    margin-bottom: 20rpx;
+    box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+    position: relative;
+
+    .love-image {
+      width: 100%;
+      height: 400rpx;
+      background-color: #F5F5F5;
+    }
+
+    .love-like {
+      position: absolute;
+      bottom: 140rpx;
+      right: 20rpx;
+      display: flex;
+      align-items: center;
+      padding: 8rpx 20rpx;
+      background-color: rgba(0, 0, 0, 0.5);
+      border-radius: 24rpx;
+
+      .love-like-icon {
+        font-size: 28rpx;
+        color: #FFFFFF;
+        margin-right: 8rpx;
+      }
+
+      .love-like-count {
+        font-size: 24rpx;
+        color: #FFFFFF;
+      }
+    }
+
+    .love-info {
+      padding: 24rpx 20rpx;
+
+      .love-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16rpx;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        .info-birth {
+          font-size: 26rpx;
+          color: #333333;
+          font-weight: 600;
+          flex: 1;
+          text-align: left;
+        }
+
+        .info-height {
+          font-size: 24rpx;
+          color: #FF6B6B;
+          font-weight: 500;
+          flex: 1;
+          text-align: center;
+        }
+
+        .info-gender {
+          font-size: 24rpx;
+          font-weight: 500;
+          flex: 1;
+          text-align: right;
+          padding: 4rpx 16rpx;
+          border-radius: 8rpx;
+
+          &.gender-male {
+            color: #4A90E2;
+            background-color: #E8F4FF;
+          }
+
+          &.gender-female {
+            color: #FF6B9D;
+            background-color: #FFE8F0;
+          }
+        }
+
+        .info-secondary {
+          font-size: 22rpx;
+          color: #999999;
+          flex: 1;
+          text-align: center;
+
+          &:first-child {
+            text-align: left;
+          }
+
+          &:last-child {
+            text-align: right;
+          }
+        }
+      }
+    }
+  }
+}
+
+.vote-list {
+  padding: 0 24rpx;
+
+  .vote-card {
+    margin-bottom: 20rpx;
+    padding: 24rpx;
+    background-color: #FFFFFF;
+    border-radius: 16rpx;
+
+    .vote-title {
+      display: block;
+      font-size: 28rpx;
+      color: #333333;
+      line-height: 1.6;
+      margin-bottom: 24rpx;
+      word-break: break-all;
+    }
+
+    .vote-options {
+      .vote-option {
+        position: relative;
+        padding: 20rpx;
+        margin-bottom: 16rpx;
+        background-color: #F8F8F8;
+        border-radius: 12rpx;
+        overflow: hidden;
+
+        .option-content {
+          position: relative;
+          z-index: 1;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 8rpx;
+
+          .option-text {
+            font-size: 28rpx;
+            color: #333333;
+            flex: 1;
+          }
+          .option-count {
+            font-size: 32rpx;
+            color: #333333;
+            font-weight: 600;
+            margin-left: 16rpx;
+          }
+        }
+
+        .option-progress {
+          position: absolute;
+          left: 0; top: 0; bottom: 0;
+          background: linear-gradient(90deg, rgba(0, 122, 255, 0.15) 0%, rgba(0, 122, 255, 0.05) 100%);
+          border-radius: 12rpx;
+          transition: width 0.3s ease;
+        }
+
+        .option-percent {
+          position: relative;
+          z-index: 1;
+          font-size: 24rpx;
+          color: #666666;
+          display: block;
+        }
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+
+    .vote-images {
+      display: flex;
+      gap: 16rpx;
+      margin-bottom: 16rpx;
+
+      .vote-image-item {
+        flex: 1;
+        position: relative;
+
+        .vote-image {
+          width: 100%;
+          height: 340rpx;
+          border-radius: 12rpx;
+          display: block;
+        }
+
+        .image-count {
+          position: absolute;
+          right: 16rpx;
+          bottom: 80rpx;
+          font-size: 48rpx;
+          color: #FFFFFF;
+          font-weight: 700;
+          text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.5);
+          z-index: 2;
+        }
+
+        .image-progress {
+          position: absolute;
+          left: 0;
+          right: 0;
+          bottom: 60rpx;
+          height: 8rpx;
+          background-color: #007AFF;
+          border-radius: 4rpx;
+          z-index: 2;
+        }
+
+        .image-desc {
+          position: absolute;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          padding: 12rpx 16rpx;
+          font-size: 24rpx;
+          color: #FFFFFF;
+          background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.6) 100%);
+          border-radius: 0 0 12rpx 12rpx;
+          text-align: center;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
+    }
+
+    .vote-footer {
+      margin-top: 24rpx;
+      padding-top: 20rpx;
+      border-top: 1rpx solid #F0F0F0;
+
+      .vote-info {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16rpx;
+
+        .vote-deadline {
+          font-size: 24rpx;
+          color: #FF6B00;
+          font-weight: 500;
+        }
+        .vote-count {
+          font-size: 24rpx;
+          color: #999999;
+        }
+      }
+
+      .vote-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .vote-forum {
+          font-size: 24rpx;
+          color: #007AFF;
+          padding: 4rpx 16rpx;
+          background-color: rgba(0, 122, 255, 0.1);
+          border-radius: 4rpx;
+          margin-right: 16rpx;
+        }
+
+        .vote-user {
+          flex: 1;
+          display: flex;
+          align-items: center;
+
+          .user-avatar {
+            width: 40rpx;
+            height: 40rpx;
+            border-radius: 50%;
+            margin-right: 12rpx;
+          }
+          .user-name {
+            font-size: 24rpx;
+            color: #666666;
+            margin-right: 16rpx;
+          }
+          .vote-time {
+            font-size: 24rpx;
+            color: #999999;
+          }
+        }
+      }
+    }
+  }
+}
+
 .group-message-list {
   padding: 20rpx 24rpx;
 
   .message-item {
-    display: flex;
-    align-items: flex-start;
-    margin-bottom: 24rpx;
+    margin-bottom: 32rpx;
 
-    &.mine {
-      justify-content: flex-end;
+    // 顶部：头像、头衔、昵称（水平排列）
+    .msg-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12rpx;
 
-      .msg-bubble {
-        background: #95EC69;
+      .msg-avatar {
+        width: 64rpx;
+        height: 64rpx;
+        border-radius: 50%;
+        margin-right: 12rpx;
+        flex-shrink: 0;
+      }
+
+      .msg-badge {
+        padding: 4rpx 12rpx;
+        background: linear-gradient(135deg, #FFD700, #FFA500);
+        border-radius: 8rpx;
+        font-size: 20rpx;
+        color: #FFFFFF;
+        margin-right: 12rpx;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+
+      .msg-nickname {
+        font-size: 24rpx;
+        color: #666666;
+        flex: 1;
       }
     }
 
-    .msg-avatar {
-      width: 72rpx;
-      height: 72rpx;
-      border-radius: 50%;
-    }
-
+    // 消息内容（带序号）
     .msg-bubble {
-      max-width: 500rpx;
-      margin: 0 16rpx;
-      padding: 20rpx;
+      padding: 24rpx;
       background: #FFFFFF;
       border-radius: 16rpx;
+      box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+      margin-bottom: 8rpx;
 
-      .msg-text {
-        font-size: 28rpx;
-        color: #333333;
-        line-height: 1.5;
-        word-break: break-all;
+      .msg-content {
+        display: flex;
+        align-items: flex-start;
+
+        .msg-number {
+          font-size: 28rpx;
+          color: #333333;
+          font-weight: 600;
+          flex-shrink: 0;
+        }
+
+        .msg-text {
+          flex: 1;
+          font-size: 28rpx;
+          color: #333333;
+          line-height: 1.6;
+          word-break: break-all;
+        }
       }
+
+      // 图片列表
+      .msg-images {
+        margin-top: 16rpx;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+
+        .msg-image {
+          width: 200rpx;
+          height: 200rpx;
+          border-radius: 12rpx;
+          background-color: #F5F5F5;
+          margin-right: 12rpx;
+          margin-bottom: 12rpx;
+
+          &:nth-child(3n) {
+            margin-right: 0;
+          }
+        }
+      }
+
+      // 一张图片时的特殊样式
+      &.has-one-image .msg-images .msg-image {
+        width: 100%;
+        height: 400rpx;
+        margin-right: 0;
+      }
+
+      // 两张图片时的特殊样式
+      &.has-two-images .msg-images .msg-image {
+        width: calc((100% - 12rpx) / 2);
+        height: 260rpx;
+
+        &:nth-child(2) {
+          margin-right: 0;
+        }
+      }
+    }
+
+    // 时间（居中）
+    .msg-time {
+      display: block;
+      text-align: center;
+      font-size: 22rpx;
+      color: #999999;
     }
   }
 

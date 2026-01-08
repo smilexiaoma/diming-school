@@ -4,46 +4,86 @@ const { successResponse, errorResponse } = require('../utils/response')
 const generateVoteList = (page, pageSize) => {
   const startId = (page - 1) * pageSize
   return [
+    // 文字投票示例
     {
       id: startId + 1,
-      type: 'image',
-      title: '今天不知道吃什么，大家帮我选一个吧',
+      voteType: 'text',
+      title: '今天不知道吃什么大家的急啊急啊按时间多久啊就撤旦大神，大家帮我选一个吧',
       deadline: '9天19小时4分结束',
-      images: [
-        'https://iph.href.lu/600x400?text=投票图片1',
-        'https://iph.href.lu/600x400?text=投票图片2'
-      ],
+      forumName: '海定校区',
+      images: [],
       options: [
-        { id: 1, text: '西瓜', image: 'https://iph.href.lu/200x200?text=西瓜', count: 566, percent: 35.42 },
-        { id: 2, text: '萝卜', image: 'https://iph.href.lu/200x200?text=萝卜', count: 320, percent: 20.03 },
-        { id: 3, text: '西红柿', image: 'https://iph.href.lu/200x200?text=西红柿', count: 280, percent: 17.53 },
-        { id: 4, text: '苹果', image: 'https://iph.href.lu/200x200?text=苹果', count: 200, percent: 12.52 },
-        { id: 5, text: '香蕉', image: 'https://iph.href.lu/200x200?text=香蕉', count: 150, percent: 9.39 },
-        { id: 6, text: '橙子', image: 'https://iph.href.lu/200x200?text=橙子', count: 82, percent: 5.13 }
+        { id: 1, text: '西瓜', count: 566, percent: 60.56 },
+        { id: 2, text: '萝卜', count: 300, percent: 32.12 },
+        { id: 3, text: '西红柿', count: 50, percent: 5.35 },
+        { id: 4, text: '苹果', count: 19, percent: 2.03 }
       ],
-      totalVotes: 1598,
+      totalVotes: 935,
+      viewCount: 888,
       avatar: 'https://iph.href.lu/100x100?text=头像',
       nickname: '张三',
       time: '5天前'
     },
+    // 图片投票示例1
     {
       id: startId + 2,
-      type: 'image',
-      title: '哪个头像更好看？',
-      deadline: '3天12小时结束',
-      images: [
-        'https://iph.href.lu/600x400?text=投票主图'
-      ],
+      voteType: 'image',
+      title: '今天不知道吃什么大家的急啊急啊按时间多久啊就撤旦大神，大家帮我选一个吧',
+      deadline: '9天19小时4分结束',
+      forumName: '海定校区',
+      images: [],
       options: [
-        { id: 1, text: '选项A', image: 'https://iph.href.lu/300x300?text=选项1', count: 9000, percent: 80.79 },
-        { id: 2, text: '选项B', image: 'https://iph.href.lu/300x300?text=选项2', count: 1100, percent: 9.88 },
-        { id: 3, text: '选项C', image: 'https://iph.href.lu/300x300?text=选项3', count: 750, percent: 6.73 },
-        { id: 4, text: '选项D', image: 'https://iph.href.lu/300x300?text=选项4', count: 290, percent: 2.6 }
+        { id: 1, text: '图片1，点击图片即可参与投票', image: 'https://iph.href.lu/300x300?text=图片1', count: 9000, percent: 80.79 },
+        { id: 2, text: '图片2', image: 'https://iph.href.lu/300x300?text=图片2', count: 2000, percent: 17.96 },
+        { id: 3, text: '图片3', image: 'https://iph.href.lu/300x300?text=图片3', count: 120, percent: 1.08 },
+        { id: 4, text: '图片4', image: 'https://iph.href.lu/300x300?text=图片4', count: 20, percent: 0.18 }
       ],
       totalVotes: 11140,
+      viewCount: 1200,
+      avatar: 'https://iph.href.lu/100x100?text=头像',
+      nickname: '张三',
+      time: '5天前',
+      optionDesc: '无条件支持黑米摩尔对封侯都会对的'
+    },
+    // 文字投票示例2
+    {
+      id: startId + 3,
+      voteType: 'text',
+      title: '周末去哪里玩比较好？求推荐一个地方',
+      deadline: '2天10小时结束',
+      forumName: '朝阳校区',
+      images: [],
+      options: [
+        { id: 1, text: '颐和园', count: 320, percent: 45.07 },
+        { id: 2, text: '故宫', count: 250, percent: 35.21 },
+        { id: 3, text: '长城', count: 100, percent: 14.08 },
+        { id: 4, text: '天坛', count: 40, percent: 5.63 }
+      ],
+      totalVotes: 710,
+      viewCount: 650,
       avatar: 'https://iph.href.lu/100x100?text=头像',
       nickname: '李四',
-      time: '2天前'
+      time: '3天前'
+    },
+    // 图片投票示例2
+    {
+      id: startId + 4,
+      voteType: 'image',
+      title: '哪个配色方案更好看？帮忙选一下',
+      deadline: '5天8小时结束',
+      forumName: '西城校区',
+      images: [],
+      options: [
+        { id: 1, text: '蓝色系', image: 'https://iph.href.lu/300x300?text=蓝色', count: 1200, percent: 55.56 },
+        { id: 2, text: '红色系', image: 'https://iph.href.lu/300x300?text=红色', count: 800, percent: 37.04 },
+        { id: 3, text: '绿色系', image: 'https://iph.href.lu/300x300?text=绿色', count: 100, percent: 4.63 },
+        { id: 4, text: '黄色系', image: 'https://iph.href.lu/300x300?text=黄色', count: 60, percent: 2.78 }
+      ],
+      totalVotes: 2160,
+      viewCount: 1500,
+      avatar: 'https://iph.href.lu/100x100?text=头像',
+      nickname: '王五',
+      time: '1天前'
     }
   ]
 }
@@ -108,39 +148,39 @@ const getList = (req, res) => {
 // 获取投票详情
 const getDetail = (req, res) => {
   const { id } = req.params
+  const voteId = parseInt(id)
 
+  // 生成所有投票数据
+  const allVotes = [
+    ...generateVoteList(1, 10),
+    ...generateVoteList(2, 10)
+  ]
+
+  // 查找对应的投票
+  const vote = allVotes.find(v => v.id === voteId)
+
+  if (!vote) {
+    return errorResponse(res, '投票不存在', 404)
+  }
+
+  // 构建详情数据
   const detail = {
-    id: parseInt(id),
-    type: 'image',
-    title: '今天不知道吃什么，大家帮我选一个吧',
-    deadline: '9天19小时4分结束',
-    images: [
+    ...vote,
+    images: vote.voteType === 'image' ? [
       'https://iph.href.lu/600x400?text=投票图片1',
       'https://iph.href.lu/600x400?text=投票图片2',
-      'https://iph.href.lu/600x400?text=投票图片3',
-      'https://iph.href.lu/600x400?text=投票图片4',
-      'https://iph.href.lu/600x400?text=投票图片5',
-      'https://iph.href.lu/600x400?text=投票图片6'
-    ],
-    options: [
-      { id: 1, text: '西瓜', image: 'https://iph.href.lu/200x200?text=西瓜', count: 566, percent: 35, voted: false },
-      { id: 2, text: '萝卜', image: 'https://iph.href.lu/200x200?text=萝卜', count: 320, percent: 20, voted: false },
-      { id: 3, text: '西红柿', image: 'https://iph.href.lu/200x200?text=西红柿', count: 280, percent: 18, voted: false },
-      { id: 4, text: '苹果', image: 'https://iph.href.lu/200x200?text=苹果', count: 200, percent: 13, voted: false },
-      { id: 5, text: '香蕉', image: 'https://iph.href.lu/200x200?text=香蕉', count: 150, percent: 9, voted: false },
-      { id: 6, text: '橙子', image: 'https://iph.href.lu/200x200?text=橙子', count: 82, percent: 5, voted: false }
-    ],
-    totalVotes: 1598,
-    viewCount: 888,
-    avatar: 'https://iph.href.lu/100x100?text=头像',
-    nickname: '张三',
-    time: '5天前',
+      'https://iph.href.lu/600x400?text=投票图片3'
+    ] : [],
+    options: vote.options.map(opt => ({
+      ...opt,
+      voted: false
+    })),
     isFollowed: false,
     hasVoted: false,
     votedOptionId: null,
     userInfo: {
-      id: 'vote_user_1',
-      nickname: '张三',
+      id: 'vote_user_' + voteId,
+      nickname: vote.nickname,
       isBanned: false,
       title: '',
       isAdmin: false

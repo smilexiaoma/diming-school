@@ -55,9 +55,11 @@
           class="vote-card"
           @click="goVoteDetail(item)"
         >
+          <!-- 投票标题（显示前200字） -->
+          <text class="vote-title">{{ truncateTitle(item.title, 200) }}</text>
+
           <!-- 文字投票 -->
           <template v-if="item.type === 'text'">
-            <text class="vote-title ellipsis-2">{{ item.title }}</text>
             <view class="vote-options">
               <view
                 v-for="(opt, optIdx) in item.options"
@@ -69,13 +71,13 @@
                   <text class="option-count">{{ opt.count }}</text>
                 </view>
                 <view class="option-progress" :style="{ width: opt.percent + '%' }"></view>
+                <text class="option-percent">{{ opt.percent.toFixed(2) }}%</text>
               </view>
             </view>
           </template>
 
-          <!-- 图片投票 -->
+          <!-- 图片投票（只显示前2个选项） -->
           <template v-else>
-            <text class="vote-title ellipsis-2">{{ item.title }}</text>
             <view class="vote-images">
               <view
                 v-for="(opt, optIdx) in item.options.slice(0, 2)"
@@ -85,20 +87,25 @@
                 <image class="vote-image" :src="opt.image" mode="aspectFill"></image>
                 <text class="image-count">{{ opt.count }}</text>
                 <view class="image-progress" :style="{ width: opt.percent + '%' }"></view>
-                <text class="image-desc ellipsis">{{ opt.text }}</text>
+                <text class="image-desc">{{ opt.text }}</text>
               </view>
             </view>
+            <!-- 图片投票描述文字（如果有） -->
+            <text v-if="item.optionDesc" class="option-desc">{{ item.optionDesc }}</text>
           </template>
 
           <view class="vote-footer">
             <view class="vote-info">
               <text class="vote-deadline">{{ item.deadline }}</text>
-              <text class="vote-count">{{ item.totalVotes }}人参与</text>
+              <text class="vote-count">{{ item.viewCount || item.totalVotes }}人吃瓜</text>
             </view>
-            <view class="vote-user">
-              <image class="user-avatar" :src="item.avatar || 'https://iph.href.lu/100x100?text=头像'" mode="aspectFill"></image>
-              <text class="user-name">{{ item.nickname }}</text>
-              <text class="vote-time">{{ item.time }}</text>
+            <view class="vote-meta">
+              <text class="vote-forum">{{ item.forumName }}</text>
+              <view class="vote-user">
+                <image class="user-avatar" :src="item.avatar || 'https://iph.href.lu/100x100?text=头像'" mode="aspectFill"></image>
+                <text class="user-name">昵称：{{ item.nickname }}</text>
+                <text class="vote-time">{{ item.time }}</text>
+              </view>
             </view>
           </view>
         </view>
@@ -239,6 +246,11 @@ export default {
     },
     goPublish() {
       uni.navigateTo({ url: '/pages/publish/vote' })
+    },
+    // 截断标题到指定字数
+    truncateTitle(title, maxLength) {
+      if (!title) return ''
+      return title.length > maxLength ? title.substring(0, maxLength) + '...' : title
     }
   }
 }
@@ -297,19 +309,21 @@ export default {
   border-radius: 16rpx;
 
   .vote-title {
+    display: block;
     font-size: 28rpx;
     color: #333333;
     line-height: 1.6;
-    margin-bottom: 20rpx;
+    margin-bottom: 24rpx;
+    word-break: break-all;
   }
 
   .vote-options {
     .vote-option {
       position: relative;
       padding: 20rpx;
-      margin-bottom: 12rpx;
-      background-color: #F5F5F5;
-      border-radius: 8rpx;
+      margin-bottom: 16rpx;
+      background-color: #F8F8F8;
+      border-radius: 12rpx;
       overflow: hidden;
 
       .option-content {
@@ -318,16 +332,39 @@ export default {
         display: flex;
         align-items: center;
         justify-content: space-between;
+        margin-bottom: 8rpx;
 
-        .option-text { font-size: 28rpx; color: #333333; }
-        .option-count { font-size: 28rpx; color: #007AFF; font-weight: 500; }
+        .option-text {
+          font-size: 28rpx;
+          color: #333333;
+          flex: 1;
+        }
+        .option-count {
+          font-size: 32rpx;
+          color: #333333;
+          font-weight: 600;
+          margin-left: 16rpx;
+        }
       }
 
       .option-progress {
         position: absolute;
         left: 0; top: 0; bottom: 0;
-        background-color: rgba(0, 122, 255, 0.15);
-        border-radius: 8rpx;
+        background: linear-gradient(90deg, rgba(0, 122, 255, 0.15) 0%, rgba(0, 122, 255, 0.05) 100%);
+        border-radius: 12rpx;
+        transition: width 0.3s ease;
+      }
+
+      .option-percent {
+        position: relative;
+        z-index: 1;
+        font-size: 24rpx;
+        color: #666666;
+        display: block;
+      }
+
+      &:last-child {
+        margin-bottom: 0;
       }
     }
   }
@@ -335,40 +372,127 @@ export default {
   .vote-images {
     display: flex;
     gap: 16rpx;
+    margin-bottom: 16rpx;
 
     .vote-image-item {
       flex: 1;
       position: relative;
 
-      .vote-image { width: 100%; height: 240rpx; border-radius: 8rpx; }
-      .image-count { position: absolute; right: 12rpx; bottom: 60rpx; font-size: 32rpx; color: #FFFFFF; font-weight: 600; text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.3); }
-      .image-progress { height: 8rpx; background-color: #007AFF; border-radius: 4rpx; margin: 8rpx 0; }
-      .image-desc { font-size: 24rpx; color: #666666; }
+      .vote-image {
+        width: 100%;
+        height: 340rpx;
+        border-radius: 12rpx;
+        display: block;
+      }
+
+      .image-count {
+        position: absolute;
+        right: 16rpx;
+        bottom: 80rpx;
+        font-size: 48rpx;
+        color: #FFFFFF;
+        font-weight: 700;
+        text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.5);
+        z-index: 2;
+      }
+
+      .image-progress {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 60rpx;
+        height: 8rpx;
+        background-color: #007AFF;
+        border-radius: 4rpx;
+        z-index: 2;
+      }
+
+      .image-desc {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: 12rpx 16rpx;
+        font-size: 24rpx;
+        color: #FFFFFF;
+        background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.6) 100%);
+        border-radius: 0 0 12rpx 12rpx;
+        text-align: center;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
     }
   }
 
+  .option-desc {
+    display: block;
+    font-size: 24rpx;
+    color: #666666;
+    line-height: 1.6;
+    margin-top: 16rpx;
+    padding: 16rpx;
+    background-color: #F8F8F8;
+    border-radius: 8rpx;
+  }
+
   .vote-footer {
-    margin-top: 20rpx;
+    margin-top: 24rpx;
     padding-top: 20rpx;
-    border-top: 1rpx solid #F5F5F5;
+    border-top: 1rpx solid #F0F0F0;
 
     .vote-info {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 12rpx;
+      margin-bottom: 16rpx;
 
-      .vote-deadline { font-size: 24rpx; color: #FF9500; }
-      .vote-count { font-size: 24rpx; color: #999999; }
+      .vote-deadline {
+        font-size: 24rpx;
+        color: #FF6B00;
+        font-weight: 500;
+      }
+      .vote-count {
+        font-size: 24rpx;
+        color: #999999;
+      }
     }
 
-    .vote-user {
+    .vote-meta {
       display: flex;
       align-items: center;
+      justify-content: space-between;
 
-      .user-avatar { width: 40rpx; height: 40rpx; border-radius: 50%; margin-right: 8rpx; }
-      .user-name { font-size: 24rpx; color: #666666; margin-right: 16rpx; }
-      .vote-time { font-size: 22rpx; color: #999999; }
+      .vote-forum {
+        font-size: 24rpx;
+        color: #007AFF;
+        padding: 4rpx 16rpx;
+        background-color: rgba(0, 122, 255, 0.1);
+        border-radius: 4rpx;
+        margin-right: 16rpx;
+      }
+
+      .vote-user {
+        flex: 1;
+        display: flex;
+        align-items: center;
+
+        .user-avatar {
+          width: 40rpx;
+          height: 40rpx;
+          border-radius: 50%;
+          margin-right: 12rpx;
+        }
+        .user-name {
+          font-size: 24rpx;
+          color: #666666;
+          margin-right: 16rpx;
+        }
+        .vote-time {
+          font-size: 24rpx;
+          color: #999999;
+        }
+      }
     }
   }
 }

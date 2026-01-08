@@ -71,10 +71,7 @@
           <text class="interact-item">{{ postData.commentCount }} 评论</text>
           <text class="interact-item">{{ postData.shareCount }} 转发</text>
         </view>
-        <view class="admin-btn" v-if="isAdmin" @click="showPostAdminMenu">
-          <uni-icons type="settings" size="16" color="#FFFFFF"></uni-icons>
-          <text>管理</text>
-        </view>
+        <dm-manage-btn :show="isAdmin" @click="showPostAdminMenu" />
       </view>
 
       <!-- 评论列表 -->

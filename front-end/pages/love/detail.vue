@@ -25,10 +25,7 @@
         <image class="profile-avatar" :src="data.avatar" mode="aspectFill"></image>
         <text class="profile-name">{{ data.nickname }}</text>
         <!-- 管理按钮 -->
-        <view class="admin-btn" v-if="isAdmin" @click="showAdminMenu = true">
-          <uni-icons type="settings" size="16" color="#FFFFFF"></uni-icons>
-          <text>管理</text>
-        </view>
+        <dm-manage-btn :show="isAdmin" @click="showAdminMenu = true" />
       </view>
 
       <!-- 基本信息行 -->

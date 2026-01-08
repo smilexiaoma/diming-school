@@ -1,5 +1,5 @@
 <template>
-  <view class="dm-filter" v-if="visible">
+  <view class="dm-filter" :class="{ 'is-visible': visible }">
     <view class="filter-mask" @click="close"></view>
     <view class="filter-content">
       <!-- 状态栏占位 -->
@@ -270,6 +270,19 @@ export default {
   right: 0;
   bottom: 0;
   z-index: 1000;
+  pointer-events: none;
+
+  &.is-visible {
+    pointer-events: auto;
+
+    .filter-mask {
+      opacity: 1;
+    }
+
+    .filter-content {
+      transform: translateX(0);
+    }
+  }
 
   .filter-mask {
     position: absolute;
@@ -278,6 +291,8 @@ export default {
     right: 0;
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: opacity 0.3s ease;
   }
 
   .filter-content {
@@ -290,6 +305,8 @@ export default {
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .filter-status-bar {

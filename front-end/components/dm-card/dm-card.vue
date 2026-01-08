@@ -5,13 +5,13 @@
       <image class="avatar" :src="data.avatar || 'https://iph.href.lu/100x100?text=头像'" mode="aspectFill"></image>
       <view class="user-info">
         <view class="user-top">
+          <text class="nickname">{{ data.nickname || '匿名用户' }}</text>
           <text v-if="data.title" class="user-title">{{ data.title }}</text>
-          <text class="nickname">昵称：{{ data.nickname || '匿名用户' }}</text>
         </view>
       </view>
       <view class="header-right">
         <text class="time">{{ data.time || '' }}</text>
-        <text v-if="data.isTop" class="top-tag">/置顶</text>
+        <text v-if="data.isTop" class="top-tag"> 置顶</text>
       </view>
     </view>
 
@@ -121,19 +121,22 @@ export default {
 
       .user-top {
         display: flex;
-        flex-direction: column;
-
-        .user-title {
-          font-size: 24rpx;
-          color: #FF9500;
-          margin-bottom: 4rpx;
-          text-decoration: underline;
-        }
+        align-items: center;
 
         .nickname {
           font-size: 28rpx;
           color: #333333;
           font-weight: 500;
+        }
+
+        .user-title {
+          font-size: 20rpx;
+          color: #FFFFFF;
+          background-color: #00BFBF;
+          padding: 2rpx 8rpx;
+          border-radius: 4rpx;
+          margin-left: 8rpx;
+          line-height: 1.5;
         }
       }
     }
@@ -148,7 +151,7 @@ export default {
       }
 
       .top-tag {
-        font-size: 22rpx;
+        font-size: 20rpx;
         color: #FF3B30;
         margin-left: 4rpx;
       }

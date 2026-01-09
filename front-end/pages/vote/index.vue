@@ -122,7 +122,7 @@
     <!-- 筛选弹窗 -->
     <dm-filter
       :visible.sync="showFilter"
-      :options="filterOptions"
+      :options="filterOptions || []"
       :value="filterValue"
       @confirm="handleFilterConfirm"
     />
@@ -171,23 +171,19 @@ export default {
       filterValue: {}
     }
   },
-  onLoad() {
-    this.getSystemInfo()
-    this.loadVoteList()
-  },
   methods: {
     getSystemInfo() {
-      const systemInfo = uni.getSystemInfoSync()
+      const systemInfo = uni.getWindowInfo()
       this.statusBarHeight = systemInfo.statusBarHeight
       const searchBarHeight = uni.upx2px(104)
       const tabBarHeight = uni.upx2px(100)
-      this.scrollHeight = systemInfo.windowHeight - this.statusBarHeight - searchBarHeight - tabBarHeight
+      this.scrollHeight = systemInfo.windowHeight - this.statusBarHeight.value - searchBarHeight - tabBarHeight
     },
     goSearch() {
       uni.navigateTo({ url: '/pages/search/index' })
     },
     switchCommunity() {
-      uni.showToast({ title: '切换社区', icon: 'none' })
+      uni.navigateTo({ url: '/pages/region/index' })
     },
     handleBannerClick({ item }) {
       if (item.url) {
@@ -247,11 +243,17 @@ export default {
     goPublish() {
       uni.navigateTo({ url: '/pages/publish/vote' })
     },
-    // 截断标题到指定字数
     truncateTitle(title, maxLength) {
       if (!title) return ''
       return title.length > maxLength ? title.substring(0, maxLength) + '...' : title
+    },
+    initPage() {
+      this.getSystemInfo()
+      this.loadVoteList()
     }
+  },
+  onLoad() {
+    this.initPage()
   }
 }
 </script>

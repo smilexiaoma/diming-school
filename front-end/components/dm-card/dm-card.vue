@@ -62,7 +62,6 @@
 
 <script>
 export default {
-  name: 'dm-card',
   props: {
     data: {
       type: Object,
@@ -85,6 +84,7 @@ export default {
       default: true
     }
   },
+  emits: ['click', 'like', 'comment'],
   methods: {
     handleClick() {
       this.$emit('click', this.data)

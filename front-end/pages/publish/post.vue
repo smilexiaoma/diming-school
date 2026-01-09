@@ -59,10 +59,10 @@
       </view>
 
       <!-- 可见范围 -->
-      <view class="form-item" @click="showVisiblePicker = true">
+      <view class="form-item" @click="chooseVisible">
         <text class="item-label">可见范围</text>
         <view class="item-value">
-          <text>{{ visibleOptions[formData.visible] }}</text>
+          <text>{{ visibleOptions[formData.visible] || '请选择' }}</text>
           <uni-icons type="right" size="14" color="#999999"></uni-icons>
         </view>
       </view>
@@ -94,6 +94,8 @@
 </template>
 
 <script>
+import { regionApi } from '@/api/index.js'
+
 export default {
   data() {
     return {
@@ -109,7 +111,7 @@ export default {
         anonymous: false,
         topType: 0
       },
-      visibleOptions: ['全校可见', '本院系可见', '仅好友可见'],
+      visibleOptions: [],
       topOptions: ['不置顶', '置顶1天(¥5)', '置顶3天(¥12)', '置顶7天(¥25)'],
       showTopicPicker: false,
       showVisiblePicker: false,
@@ -117,23 +119,32 @@ export default {
     }
   },
   onLoad() {
-    const systemInfo = uni.getSystemInfoSync()
+    const systemInfo = uni.getWindowInfo()
     this.statusBarHeight = systemInfo.statusBarHeight
     this.calcRightSafeArea()
     this.calcScrollHeight()
+    this.loadVisibleOptions()
   },
   methods: {
+    async loadVisibleOptions() {
+      try {
+        const data = await regionApi.getVisibleOptions()
+        this.visibleOptions = (data || []).map(item => item.name)
+      } catch (e) {
+        this.visibleOptions = ['全国可见', '本城市可见', '本校区可见']
+      }
+    },
     calcRightSafeArea() {
       // #ifdef MP-WEIXIN
       // 获取胶囊按钮位置信息
       const menuButtonInfo = uni.getMenuButtonBoundingClientRect()
-      const systemInfo = uni.getSystemInfoSync()
+      const systemInfo = uni.getWindowInfo()
       // 右侧安全距离 = 屏幕宽度 - 胶囊按钮左边界 + 间距
       this.rightSafeArea = systemInfo.windowWidth - menuButtonInfo.left + 10
       // #endif
     },
     calcScrollHeight() {
-      const systemInfo = uni.getSystemInfoSync()
+      const systemInfo = uni.getWindowInfo()
       // 计算滚动区域高度 = 屏幕高度 - 状态栏 - 导航栏(88rpx) - 底部按钮栏(100rpx)
       const navBarHeight = uni.upx2px(88)
       const submitBarHeight = uni.upx2px(100)
@@ -157,6 +168,15 @@ export default {
       uni.chooseLocation({
         success: (res) => {
           this.formData.location = res.name || res.address
+        }
+      })
+    },
+    chooseVisible() {
+      if (!this.visibleOptions.length) return
+      uni.showActionSheet({
+        itemList: this.visibleOptions,
+        success: (res) => {
+          this.formData.visible = res.tapIndex
         }
       })
     },

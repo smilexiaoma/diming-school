@@ -4,20 +4,20 @@
     <view class="nav-bar" :style="{ paddingTop: statusBarHeight + 'px' }">
       <view class="nav-content">
         <text class="nav-cancel" @click="goBack">取消</text>
-        <text class="nav-title">发布闲置</text>
+        <text class="nav-title">发布互助</text>
       </view>
     </view>
 
     <!-- 表单内容 -->
     <scroll-view class="form-scroll" scroll-y :style="{ height: scrollHeight + 'px' }">
-      <!-- 写明要售卖的闲置 -->
+      <!-- 描述需要帮助的事情 -->
       <view class="form-section">
-        <text class="section-title">写明要售卖的闲置</text>
+        <text class="section-title">描述需要帮助的事情</text>
         <view class="content-box">
           <textarea
             class="content-input"
             v-model="formData.content"
-            placeholder="描述一下宝贝的品牌、型号、入手渠道、转手原因..."
+            placeholder="详细描述你需要帮助的事情，如代取快递、代买东西、代排队等..."
             :maxlength="500"
           ></textarea>
           <view class="image-upload">
@@ -34,9 +34,9 @@
         </view>
       </view>
 
-      <!-- 隐藏信息（仅购买人可见） -->
+      <!-- 隐藏信息（仅接单人可见） -->
       <view class="form-section">
-        <text class="section-title">隐藏信息（仅购买人可见）</text>
+        <text class="section-title">隐藏信息（仅接单人可见）</text>
         <view class="content-box">
           <textarea
             class="content-input"
@@ -58,60 +58,67 @@
         </view>
       </view>
 
-      <!-- 价格和包邮 -->
+      <!-- 价格设置 -->
       <view class="form-section">
-        <text class="section-title">价格</text>
-        <view class="price-row">
-          <view class="price-input-box">
-            <input class="price-input" type="digit" v-model="formData.price" placeholder="0.00" />
+        <text class="section-title">价格设置</text>
+        <view class="price-group">
+          <view class="price-item">
+            <text class="price-label">起拍价</text>
+            <view class="price-input-box">
+              <text class="price-unit">¥</text>
+              <input class="price-input" type="digit" v-model="formData.startPrice" placeholder="0.00" />
+            </view>
           </view>
-          <view class="shipping-option">
-            <text class="shipping-label">包邮</text>
-            <switch :checked="formData.freeShipping" @change="onShippingChange" color="#007AFF" />
-            <text class="shipping-tip">此按钮默认打开，关闭则自提</text>
+          <view class="price-item">
+            <text class="price-label">一口价（可选）</text>
+            <view class="price-input-box">
+              <text class="price-unit">¥</text>
+              <input class="price-input" type="digit" v-model="formData.buyNowPrice" placeholder="不设置" />
+            </view>
           </view>
         </view>
+        <text class="price-tip">一口价：出价达到此价格直接成交，不设置则按竞拍结束时最低价成交</text>
       </view>
 
-      <!-- 发货时间 -->
+      <!-- 竞拍截止时间 -->
       <view class="form-section">
-        <text class="section-title">发货时间（2选1）</text>
-        <view class="delivery-tabs">
+        <text class="section-title">竞拍截止时间</text>
+        <view class="deadline-tabs">
           <view
-            class="delivery-tab"
-            :class="{ active: formData.deliveryType === 'hours' }"
-            @click="formData.deliveryType = 'hours'"
+            class="deadline-tab"
+            :class="{ active: formData.deadlineType === 'hours' }"
+            @click="formData.deadlineType = 'hours'"
           >
-            <text>小时内</text>
+            <text>小时后</text>
           </view>
           <view
-            class="delivery-tab"
-            :class="{ active: formData.deliveryType === 'deadline' }"
-            @click="formData.deliveryType = 'deadline'"
+            class="deadline-tab"
+            :class="{ active: formData.deadlineType === 'datetime' }"
+            @click="formData.deadlineType = 'datetime'"
           >
-            <text>指定时间前</text>
+            <text>指定时间</text>
           </view>
         </view>
-        <view class="delivery-input-box">
+        <view class="deadline-input-box">
           <input
-            v-if="formData.deliveryType === 'hours'"
-            class="delivery-input"
+            v-if="formData.deadlineType === 'hours'"
+            class="deadline-input"
             type="digit"
-            v-model="formData.deliveryHours"
+            v-model="formData.deadlineHours"
             placeholder="24"
           />
           <picker
             v-else
             mode="date"
-            :value="formData.deliveryDeadline"
+            :value="formData.deadlineDatetime"
             @change="onDeadlineChange"
           >
-            <view class="delivery-input picker-input">
-              {{ formData.deliveryDeadline || '选择日期' }}
+            <view class="deadline-input picker-input">
+              {{ formData.deadlineDatetime || '选择日期' }}
             </view>
           </picker>
         </view>
-        <text class="delivery-tip">默认选左边且默认值是24小时内，可为0，即拍中后自动线上发货，可为小数</text>
+        <text class="deadline-tip">竞拍结束后，出价最低者中标</text>
       </view>
 
       <!-- 联系方式 -->
@@ -177,7 +184,7 @@
         </view>
       </view>
 
-      <!-- 底部占位,防止内容被按钮遮挡 -->
+      <!-- 底部占位 -->
       <view style="height: 120rpx;"></view>
     </scroll-view>
 
@@ -218,7 +225,7 @@
 </template>
 
 <script>
-import { idleApi } from '@/api/index.js'
+import { helpApi } from '@/api/index.js'
 import userStore from '@/store/user.js'
 
 export default {
@@ -232,11 +239,11 @@ export default {
         images: [],
         hiddenInfo: '',
         hiddenImages: [],
-        price: '',
-        freeShipping: true,
-        deliveryType: 'hours',
-        deliveryHours: '24',
-        deliveryDeadline: '',
+        startPrice: '',
+        buyNowPrice: '',
+        deadlineType: 'hours',
+        deadlineHours: '24',
+        deadlineDatetime: '',
         contactType: 'phone',
         contactValue: '',
         visibilityType: 'campus',
@@ -280,14 +287,13 @@ export default {
   },
   methods: {
     initPage() {
-      const systemInfo = uni.getWindowInfo()
-      this.statusBarHeight = systemInfo.statusBarHeight
+      const windowInfo = uni.getWindowInfo()
+      this.statusBarHeight = windowInfo.statusBarHeight
       const navBarHeight = uni.upx2px(88)
       const submitBarHeight = uni.upx2px(100)
-      this.scrollHeight = systemInfo.windowHeight - this.statusBarHeight - navBarHeight - submitBarHeight
+      this.scrollHeight = windowInfo.windowHeight - this.statusBarHeight - navBarHeight - submitBarHeight
     },
     loadUserContact() {
-      // 自动同步用户资料中的联系方式
       const userInfo = userStore.getUserInfo()
       if (userInfo.phone) {
         this.formData.contactValue = userInfo.phone
@@ -309,11 +315,8 @@ export default {
     deleteImage(field, index) {
       this.formData[field].splice(index, 1)
     },
-    onShippingChange(e) {
-      this.formData.freeShipping = e.detail.value
-    },
     onDeadlineChange(e) {
-      this.formData.deliveryDeadline = e.detail.value
+      this.formData.deadlineDatetime = e.detail.value
     },
     getTopPrice(hours) {
       const option = this.topOptions.find(o => o.hours === hours)
@@ -326,15 +329,11 @@ export default {
       this.showTopPopup = false
     },
     async handleSubmit() {
-      // 表单验证
       if (!this.formData.content.trim()) {
-        return uni.showToast({ title: '请描述要售卖的闲置', icon: 'none' })
+        return uni.showToast({ title: '请描述需要帮助的事情', icon: 'none' })
       }
-      if (!this.formData.images.length) {
-        return uni.showToast({ title: '请上传商品图片', icon: 'none' })
-      }
-      if (!this.formData.price) {
-        return uni.showToast({ title: '请输入价格', icon: 'none' })
+      if (!this.formData.startPrice) {
+        return uni.showToast({ title: '请输入起拍价', icon: 'none' })
       }
       if (!this.formData.contactValue.trim()) {
         return uni.showToast({ title: '请填写联系方式', icon: 'none' })
@@ -343,16 +342,16 @@ export default {
       uni.showLoading({ title: '发布中...' })
 
       try {
-        await idleApi.saveOrUpdate({
+        await helpApi.saveOrUpdate({
           content: this.formData.content,
           images: this.formData.images,
           hiddenInfo: this.formData.hiddenInfo,
           hiddenImages: this.formData.hiddenImages,
-          price: parseFloat(this.formData.price),
-          freeShipping: this.formData.freeShipping,
-          deliveryType: this.formData.deliveryType,
-          deliveryHours: this.formData.deliveryType === 'hours' ? parseFloat(this.formData.deliveryHours || 24) : null,
-          deliveryDeadline: this.formData.deliveryType === 'deadline' ? this.formData.deliveryDeadline : null,
+          startPrice: parseFloat(this.formData.startPrice),
+          buyNowPrice: this.formData.buyNowPrice ? parseFloat(this.formData.buyNowPrice) : null,
+          deadlineType: this.formData.deadlineType,
+          deadlineHours: this.formData.deadlineType === 'hours' ? parseFloat(this.formData.deadlineHours || 24) : null,
+          deadlineDatetime: this.formData.deadlineType === 'datetime' ? this.formData.deadlineDatetime : null,
           contactType: this.formData.contactType,
           contactValue: this.formData.contactValue,
           visibilityType: this.formData.visibilityType,
@@ -428,8 +427,6 @@ export default {
   }
 }
 
-.form-scroll {}
-
 .form-section {
   padding: 24rpx;
   background-color: #FFFFFF;
@@ -498,40 +495,48 @@ export default {
   justify-content: center;
 }
 
-.price-row {
+.price-group {
   display: flex;
-  align-items: center;
   gap: 24rpx;
 }
 
+.price-item {
+  flex: 1;
+  .price-label {
+    font-size: 26rpx;
+    color: #666666;
+    margin-bottom: 12rpx;
+    display: block;
+  }
+}
+
 .price-input-box {
-  width: 200rpx;
+  display: flex;
+  align-items: center;
   border: 1rpx solid #E5E5E5;
   border-radius: 8rpx;
   padding: 16rpx 20rpx;
+  .price-unit {
+    font-size: 28rpx;
+    color: #333333;
+    margin-right: 8rpx;
+  }
   .price-input {
-    font-size: 28rpx;
-    color: #333333;
-  }
-}
-
-.shipping-option {
-  display: flex;
-  align-items: center;
-  gap: 12rpx;
-  flex: 1;
-  .shipping-label {
-    font-size: 28rpx;
-    color: #333333;
-  }
-  .shipping-tip {
-    font-size: 22rpx;
-    color: #999999;
     flex: 1;
+    font-size: 28rpx;
+    color: #333333;
   }
 }
 
-.delivery-tabs {
+.price-tip {
+  font-size: 22rpx;
+  color: #999999;
+  margin-top: 16rpx;
+  display: block;
+  line-height: 1.6;
+}
+
+.deadline-tabs {
   display: flex;
   border: 1rpx solid #E5E5E5;
   border-radius: 8rpx;
@@ -539,7 +544,7 @@ export default {
   margin-bottom: 20rpx;
 }
 
-.delivery-tab {
+.deadline-tab {
   flex: 1;
   padding: 20rpx;
   text-align: center;
@@ -556,11 +561,11 @@ export default {
   }
 }
 
-.delivery-input-box {
+.deadline-input-box {
   margin-bottom: 16rpx;
 }
 
-.delivery-input {
+.deadline-input {
   border: 1rpx solid #E5E5E5;
   border-radius: 8rpx;
   padding: 16rpx 20rpx;
@@ -574,10 +579,9 @@ export default {
   align-items: center;
 }
 
-.delivery-tip {
+.deadline-tip {
   font-size: 22rpx;
   color: #999999;
-  line-height: 1.6;
 }
 
 .contact-header {
@@ -683,7 +687,6 @@ export default {
   }
 }
 
-// 弹窗样式
 .popup-mask {
   position: fixed;
   top: 0;

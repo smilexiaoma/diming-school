@@ -93,7 +93,7 @@ export default {
     }
   },
   onLoad(options) {
-    const sys = uni.getSystemInfoSync()
+    const sys = uni.getWindowInfo()
     this.statusBarHeight = sys.statusBarHeight
     this.safeAreaBottom = sys.screenHeight - sys.safeArea.bottom
 
@@ -136,7 +136,7 @@ export default {
       }
     },
     calcScrollHeight() {
-      const sys = uni.getSystemInfoSync()
+      const sys = uni.getWindowInfo()
       let height = sys.windowHeight - this.statusBarHeight - uni.upx2px(88) - uni.upx2px(100) - this.safeAreaBottom
       if (this.chatType === 'idle' && this.goodsInfo.id) {
         height -= uni.upx2px(160)

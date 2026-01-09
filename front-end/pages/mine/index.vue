@@ -117,7 +117,7 @@ export default {
   },
   methods: {
     getSystemInfo() {
-      const systemInfo = uni.getSystemInfoSync()
+      const systemInfo = uni.getWindowInfo()
       this.statusBarHeight = systemInfo.statusBarHeight
       const headerHeight = uni.upx2px(200) // 调整头部高度，移除了统计数据部分
       const tabBarHeight = uni.upx2px(100)

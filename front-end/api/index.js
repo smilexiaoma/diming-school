@@ -197,6 +197,18 @@ export const searchApi = {
 }
 
 /**
+ * 地区相关 API
+ */
+export const regionApi = {
+  // 获取地区列表
+  getList: () => get('/region/list'),
+  // 获取校区列表
+  getSchools: (regionId) => get('/region/schools', { regionId }),
+  // 获取可见范围选项
+  getVisibleOptions: () => get('/region/visible-options')
+}
+
+/**
  * 用户中心相关 API
  */
 export const userApi = {

@@ -198,13 +198,13 @@ export default {
     }
   },
   onLoad() {
-    const systemInfo = uni.getSystemInfoSync()
+    const systemInfo = uni.getWindowInfo()
     this.statusBarHeight = systemInfo.statusBarHeight
     this.calcScrollHeight()
   },
   methods: {
     calcScrollHeight() {
-      const systemInfo = uni.getSystemInfoSync()
+      const systemInfo = uni.getWindowInfo()
       const navBarHeight = uni.upx2px(88)
       const submitBarHeight = uni.upx2px(100)
       this.scrollHeight = systemInfo.windowHeight - this.statusBarHeight - navBarHeight - submitBarHeight

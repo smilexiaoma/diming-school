@@ -89,7 +89,7 @@
     <!-- 筛选弹窗 -->
     <dm-filter
       :visible.sync="showFilter"
-      :options="filterOptions"
+      :options="filterOptions || []"
       :value="filterValue"
       @confirm="handleFilterConfirm"
     />
@@ -185,7 +185,7 @@ export default {
   },
   methods: {
     getSystemInfo() {
-      const systemInfo = uni.getSystemInfoSync()
+      const systemInfo = uni.getWindowInfo()
       this.statusBarHeight = systemInfo.statusBarHeight
       const searchBarHeight = uni.upx2px(104)
       const tabBarHeight = uni.upx2px(100)
@@ -195,7 +195,7 @@ export default {
       uni.navigateTo({ url: '/pages/search/index' })
     },
     switchCommunity() {
-      uni.showToast({ title: '切换社区', icon: 'none' })
+      uni.navigateTo({ url: '/pages/region/index' })
     },
     handleBannerClick({ item, index }) {
       if (item.url) {

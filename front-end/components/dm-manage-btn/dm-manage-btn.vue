@@ -7,13 +7,13 @@
 
 <script>
 export default {
-  name: 'dm-manage-btn',
   props: {
     show: {
       type: Boolean,
       default: false
     }
   },
+  emits: ['click'],
   methods: {
     handleClick() {
       this.$emit('click')

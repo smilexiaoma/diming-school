@@ -127,7 +127,6 @@
 
 <script>
 export default {
-  name: 'dm-filter',
   props: {
     visible: {
       type: Boolean,
@@ -142,6 +141,7 @@ export default {
       default: () => ({})
     }
   },
+  emits: ['update:visible', 'close', 'confirm'],
   data() {
     return {
       selected: {},
@@ -152,7 +152,7 @@ export default {
       pickerIndex: [0]
     }
   },
-  created() {
+  mounted() {
     this.getSystemInfo()
   },
   watch: {
@@ -164,13 +164,11 @@ export default {
   },
   methods: {
     getSystemInfo() {
-      const systemInfo = uni.getSystemInfoSync()
+      const systemInfo = uni.getWindowInfo()
       this.statusBarHeight = systemInfo.statusBarHeight || 0
 
       // #ifdef MP-WEIXIN
-      // 获取小程序胶囊按钮信息
       const menuButtonInfo = uni.getMenuButtonBoundingClientRect()
-      // 胶囊按钮底部到状态栏底部的距离
       this.capsuleHeight = menuButtonInfo.bottom - systemInfo.statusBarHeight + 8
       // #endif
     },

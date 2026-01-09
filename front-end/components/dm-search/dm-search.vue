@@ -18,7 +18,7 @@
       <uni-icons type="tune" size="20" color="#333333" class="filter-icon"></uni-icons>
     </view>
     <view v-if="showSwitch" class="switch-btn" @click="$emit('switch')">
-      <uni-icons type="loop" size="20" color="#333333" class="switch-icon"></uni-icons>
+      <uni-icons type="location-filled" size="20" color="#333333" class="switch-icon"></uni-icons>
     </view>
   </view>
 </template>
@@ -65,7 +65,7 @@ export default {
       // #ifdef MP-WEIXIN
       // 获取胶囊按钮位置信息
       const menuButtonInfo = uni.getMenuButtonBoundingClientRect()
-      const systemInfo = uni.getSystemInfoSync()
+      const systemInfo = uni.getWindowInfo()
       // 右侧安全距离 = 屏幕宽度 - 胶囊按钮左边界 + 间距
       this.rightSafeArea = systemInfo.windowWidth - menuButtonInfo.left + 10
       // #endif

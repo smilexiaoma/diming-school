@@ -34,7 +34,6 @@
 
 <script>
 export default {
-  name: 'dm-filter-bar',
   props: {
     filters: {
       type: Array,
@@ -45,6 +44,7 @@ export default {
       default: () => ({})
     }
   },
+  emits: ['input', 'change'],
   data() {
     return {
       activeIndex: -1,

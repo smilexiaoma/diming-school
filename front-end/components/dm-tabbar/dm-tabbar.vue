@@ -51,7 +51,6 @@
 
 <script>
 export default {
-  name: 'DmTabbar',
   data() {
     return {
       current: 0,
@@ -132,7 +131,6 @@ export default {
       const currentPage = pages[pages.length - 1]
       const route = '/' + currentPage.route
 
-      // 如果在主页，根据当前tab跳转
       if (route === '/pages/index/index') {
         const currentTab = getApp().globalData?.currentIndexTab || '最新'
         const tabPublishMap = {
@@ -150,7 +148,6 @@ export default {
         return
       }
 
-      // 页面路径到发布页面的映射
       const publishMap = {
         '/pages/help/index': '/pages/publish/help',
         '/pages/errand/index': '/pages/publish/errand',

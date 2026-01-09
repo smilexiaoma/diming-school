@@ -8,28 +8,28 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 | 子项目 | 技术栈 | 说明 |
 |--------|--------|------|
-| **diming/** | UniApp (Vue 3) | 前端小程序/H5/APP |
-| **diming-server/** | Express.js | 后端 API 服务 (端口 5102) |
-| **diming-manage/** | Vue 3 + Element Plus + Vite | 后台管理系统 (端口 5173) |
+| **front-end/** | UniApp (Vue 3) | 前端小程序/H5/APP |
+| **layer/** | Express.js | 后端 API 服务 (端口 5102) |
+| **admin/** | Vue 3 + Element Plus + Vite | 后台管理系统 (端口 5173) |
 
 ## 开发命令
 
 ```bash
 # 后端服务（带热重载）
-cd diming-server && pnpm dev
+cd layer && pnpm dev
 
 # 后台管理系统
-cd diming-manage && pnpm dev
+cd admin && pnpm dev
 
 # 后台管理系统构建
-cd diming-manage && pnpm build
+cd admin && pnpm build
 
 # 前端小程序需使用 HBuilder 编译运行
 ```
 
 ## 代码架构
 
-### 前端小程序 (diming/)
+### 前端小程序 (front-end/)
 ```
 pages/           # 页面（index/post/vote/errand/idle/love/help/message/chat/mine）
 components/      # 可复用组件（dm-* 前缀）
@@ -39,7 +39,7 @@ store/user.js    # 用户状态管理
 pages.json       # 路由配置
 ```
 
-### 后端服务 (diming-server/)
+### 后端服务 (layer/)
 ```
 src/
 ├── app.js              # 应用入口
@@ -50,7 +50,7 @@ src/
 └── utils/response.js   # 响应格式化
 ```
 
-### 后台管理系统 (diming-manage/)
+### 后台管理系统 (admin/)
 ```
 src/
 ├── api/index.js        # API 接口（所有 /admin/* 路由）
@@ -89,10 +89,10 @@ SUPER_ADMIN > PLATFORM_ADMIN > PLATFORM_SUB_ADMIN > FORUM_ADMIN > SUB_ADMIN > NO
 
 | 文件 | 作用 |
 |------|------|
-| `diming/api/index.js` | 小程序 API 接口 |
-| `diming-manage/src/api/index.js` | 后台管理 API 接口 |
-| `diming-server/src/routes/index.js` | 后端路由注册 |
-| `diming-server/src/controllers/admin*.js` | 后台管理控制器 |
+| `front-end/api/index.js` | 小程序 API 接口 |
+| `admin/src/api/index.js` | 后台管理 API 接口 |
+| `layer/src/routes/index.js` | 后端路由注册 |
+| `layer/src/controllers/admin*.js` | 后台管理控制器 |
 
 ## 注意事项
 

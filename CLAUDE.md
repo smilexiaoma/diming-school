@@ -25,6 +25,7 @@ cd admin && pnpm dev
 cd admin && pnpm build
 
 # 前端小程序需使用 HBuilder 编译运行
+uniapp不支持`pnpm`
 ```
 
 ## 代码架构

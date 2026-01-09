@@ -305,6 +305,16 @@ const FILTER_CONFIG = {
   '互助群': []
 }
 
+// tabBar 页面路径列表
+const TAB_BAR_PAGES = [
+  '/pages/index/index',
+  '/pages/help/index',
+  '/pages/errand/index',
+  '/pages/idle/index',
+  '/pages/message/index',
+  '/pages/mine/index'
+]
+
 export default {
   data() {
     return {
@@ -442,6 +452,22 @@ export default {
       }
       this.loading = false
     },
+    // 通用页面跳转方法，自动判断是否为 tabBar 页面
+    navigateTo(url) {
+      if (!url) return
+      // 提取路径部分（去除查询参数）
+      const path = url.split('?')[0]
+      // 确保路径以 / 开头
+      const normalizedPath = path.startsWith('/') ? path : '/' + path
+
+      if (TAB_BAR_PAGES.includes(normalizedPath)) {
+        // tabBar 页面使用 switchTab（注意：switchTab 不支持带参数）
+        uni.switchTab({ url: normalizedPath })
+      } else {
+        // 普通页面使用 navigateTo
+        uni.navigateTo({ url })
+      }
+    },
     goSearch() {
       uni.navigateTo({ url: '/pages/search/index' })
     },
@@ -450,12 +476,12 @@ export default {
     },
     handleBannerClick({ item, index }) {
       if (item.url) {
-        uni.navigateTo({ url: item.url })
+        this.navigateTo(item.url)
       }
     },
     handleNavClick({ item, index }) {
       if (item.url) {
-        uni.navigateTo({ url: item.url })
+        this.navigateTo(item.url)
       } else {
         uni.showToast({ title: item.name, icon: 'none' })
       }
@@ -465,7 +491,7 @@ export default {
     },
     handleInfoClick(item) {
       if (item.url) {
-        uni.navigateTo({ url: item.url })
+        this.navigateTo(item.url)
       } else {
         uni.showToast({ title: item.content, icon: 'none' })
       }

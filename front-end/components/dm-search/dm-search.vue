@@ -18,7 +18,7 @@
       <uni-icons type="tune" size="20" color="#333333" class="filter-icon"></uni-icons>
     </view>
     <view v-if="showSwitch" class="switch-btn" @click="$emit('switch')">
-      <uni-icons type="loop" size="20" color="#333333" class="switch-icon"></uni-icons>
+      <uni-icons type="location-filled" size="20" color="#333333" class="switch-icon"></uni-icons>
     </view>
   </view>
 </template>

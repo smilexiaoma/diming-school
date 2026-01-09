@@ -162,7 +162,7 @@ export default {
   },
   onLoad(options) {
     this.helpId = options.id
-    const sys = uni.getSystemInfoSync()
+    const sys = uni.getWindowInfo()
     this.statusBarHeight = sys.statusBarHeight
     this.safeAreaBottom = sys.screenHeight - sys.safeArea.bottom
     this.scrollHeight = sys.windowHeight - sys.statusBarHeight - uni.upx2px(88) - uni.upx2px(120) - this.safeAreaBottom

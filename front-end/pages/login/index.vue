@@ -92,46 +92,49 @@ export default {
   },
   methods: {
     getSystemInfo() {
-      const systemInfo = uni.getSystemInfoSync()
+      const systemInfo = uni.getWindowInfo()
       this.statusBarHeight = systemInfo.statusBarHeight
     },
     checkLogin() {
-      if (userStore.isLogin()) {
-        uni.reLaunch({
-          url: '/pages/index/index'
-        })
+      // 直接从缓存读取登录状态，避免 Pinia 注入上下文问题
+      try {
+        const userCache = uni.getStorageSync('user_info')
+        const isLogin = userCache ? JSON.parse(userCache).isLogin : false
+        if (isLogin) {
+          uni.reLaunch({
+            url: '/pages/index/index'
+          })
+        }
+      } catch (e) {
+        console.error('检查登录状态失败', e)
       }
     },
-    async loadTestAccounts() {
+    loadTestAccounts() {
       this.loading = true
-      const data = await authApi.getTestAccounts()
-      this.adminAccounts = data.admins || []
-      this.userAccounts = data.users || []
-      this.loading = false
+      authApi.getTestAccounts().then(data => {
+        this.adminAccounts = data.admins || []
+        this.userAccounts = data.users || []
+        this.loading = false
+      })
     },
-    async quickLogin(account) {
+    quickLogin(account) {
       uni.showLoading({ title: '登录中...' })
 
-      const data = await authApi.login({ accountId: account.id })
-
-      // 保存 token
-      setToken(data.token)
-
-      // 保存用户信息到 store
-      userStore.login(data.userInfo, data.adminInfo)
-
-      uni.hideLoading()
-      uni.showToast({
-        title: '登录成功',
-        icon: 'success',
-        duration: 1500
-      })
-
-      setTimeout(() => {
-        uni.switchTab({
-          url: '/pages/index/index'
+      authApi.login({ accountId: account.id }).then(data => {
+        setToken(data.token)
+        userStore.login(data.userInfo, data.adminInfo)
+        uni.hideLoading()
+        uni.showToast({
+          title: '登录成功',
+          icon: 'success',
+          duration: 1500
         })
-      }, 1500)
+        setTimeout(() => {
+          uni.switchTab({
+            url: '/pages/index/index'
+          })
+        }, 1500)
+      })
     }
   }
 }

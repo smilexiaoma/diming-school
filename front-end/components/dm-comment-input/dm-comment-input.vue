@@ -18,7 +18,6 @@
 
 <script>
 export default {
-  name: 'dm-comment-input',
   props: {
     visible: {
       type: Boolean,
@@ -33,6 +32,7 @@ export default {
       default: true
     }
   },
+  emits: ['send', 'update:visible'],
   data() {
     return {
       inputText: ''

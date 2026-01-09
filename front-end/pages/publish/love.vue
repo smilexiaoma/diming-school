@@ -248,7 +248,7 @@ export default {
     }
   },
   onLoad() {
-    this.statusBarHeight = uni.getSystemInfoSync().statusBarHeight
+    this.statusBarHeight = uni.getWindowInfo().statusBarHeight
     this.calcRightSafeArea()
     this.calcScrollHeight()
   },
@@ -256,12 +256,12 @@ export default {
     calcRightSafeArea() {
       // #ifdef MP-WEIXIN
       const menuButtonInfo = uni.getMenuButtonBoundingClientRect()
-      const systemInfo = uni.getSystemInfoSync()
+      const systemInfo = uni.getWindowInfo()
       this.rightSafeArea = systemInfo.windowWidth - menuButtonInfo.left + 10
       // #endif
     },
     calcScrollHeight() {
-      const systemInfo = uni.getSystemInfoSync()
+      const systemInfo = uni.getWindowInfo()
       const navBarHeight = uni.upx2px(88)
       const submitBarHeight = uni.upx2px(100)
       this.scrollHeight = systemInfo.windowHeight - this.statusBarHeight - navBarHeight - submitBarHeight

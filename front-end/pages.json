@@ -162,6 +162,13 @@
       }
     },
     {
+      "path": "pages/publish/help",
+      "style": {
+        "navigationBarTitleText": "发布互助",
+        "navigationStyle": "custom"
+      }
+    },
+    {
       "path": "pages/mine/profile",
       "style": {
         "navigationBarTitleText": "编辑资料",
@@ -249,6 +256,13 @@
       "path": "pages/mine/setting",
       "style": {
         "navigationBarTitleText": "设置",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/region/index",
+      "style": {
+        "navigationBarTitleText": "切换校区",
         "navigationStyle": "custom"
       }
     }

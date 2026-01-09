@@ -24,7 +24,6 @@
 
 <script>
 export default {
-  name: 'dm-tabs',
   props: {
     list: {
       type: Array,
@@ -35,6 +34,7 @@ export default {
       default: 0
     }
   },
+  emits: ['change', 'update:current'],
   data() {
     return {
       scrollLeft: 0

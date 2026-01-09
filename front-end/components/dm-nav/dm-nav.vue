@@ -4,7 +4,7 @@
       <!-- 第一行前5个导航项 -->
       <view
         v-for="(item, index) in firstRowList"
-        :key="index"
+        :key="item._key"
         class="nav-item"
         @click="handleClick(item, index)"
       >
@@ -26,7 +26,7 @@
       <!-- 展开后显示的剩余导航项（始终渲染，通过CSS控制显示） -->
       <view
         v-for="(item, index) in remainingList"
-        :key="index + 100"
+        :key="item._key"
         class="nav-item nav-item-expandable"
         :class="{
           'nav-item-empty': item.isEmpty,
@@ -48,7 +48,6 @@
 
 <script>
 export default {
-  name: 'dm-nav',
   props: {
     list: {
       type: Array,
@@ -59,6 +58,7 @@ export default {
       default: true
     }
   },
+  emits: ['click'],
   data() {
     return {
       isExpanded: false
@@ -66,15 +66,21 @@ export default {
   },
   computed: {
     firstRowList() {
-      // 第一行显示前5个导航项
-      return this.list.slice(0, 5)
+      return this.list.slice(0, 5).map((item, index) => ({
+        ...item,
+        _key: item.id || item.name || `first-${index}`
+      }))
     },
     remainingList() {
-      // 剩余的导航项，最多12个（第二行6个 + 第三行6个）
-      const remaining = this.list.slice(5, 17)
-      // 填充空占位符，确保始终有12个位置（2行×6列）
+      const remaining = this.list.slice(5, 17).map((item, index) => ({
+        ...item,
+        _key: item.id || item.name || `remain-${index}`
+      }))
       const placeholderCount = 12 - remaining.length
-      const placeholders = Array(placeholderCount).fill({ isEmpty: true })
+      const placeholders = Array(placeholderCount).fill(null).map((_, i) => ({
+        isEmpty: true,
+        _key: `empty-${i}`
+      }))
       return [...remaining, ...placeholders]
     }
   },

@@ -68,24 +68,21 @@ import { AdminAction } from '@/utils/admin.js'
 import userStore from '@/store/user.js'
 
 export default {
-  name: 'dm-admin-menu',
   props: {
-    // 是否显示
     show: {
       type: Boolean,
       default: false
     },
-    // 目标内容信息
     target: {
       type: Object,
       default: () => ({})
     },
-    // 目标用户信息
     targetUser: {
       type: Object,
       default: () => ({})
     }
   },
+  emits: ['update:show', 'close', 'action'],
   data() {
     return {
       visible: false,
@@ -97,7 +94,6 @@ export default {
     }
   },
   computed: {
-    // 根据当前用户权限和目标状态获取可用操作
     actions() {
       const context = {
         isPinned: this.target.isPinned || false,
@@ -111,11 +107,13 @@ export default {
     }
   },
   watch: {
-    show(val) {
-      if (val) {
-        this.open()
-      } else {
-        this.close()
+    show: {
+      handler(val) {
+        if (val) {
+          this.open()
+        } else {
+          this.close()
+        }
       }
     }
   },
@@ -137,7 +135,6 @@ export default {
     handleAction(item) {
       const action = item.action
 
-      // 特殊处理的操作
       switch (action) {
         case AdminAction.SET_TITLE:
           this.showTitleDialog = true
@@ -150,7 +147,6 @@ export default {
         case AdminAction.DELETE_POST:
         case AdminAction.BAN_USER:
         case AdminAction.CANCEL_ADMIN:
-          // 危险操作需要确认
           this.confirmDangerAction(action, item.label)
           return
         default:
@@ -317,7 +313,6 @@ export default {
   }
 }
 
-// 弹窗样式
 .title-dialog,
 .id-dialog {
   position: fixed;

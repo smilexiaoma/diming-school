@@ -241,7 +241,7 @@
     <!-- 筛选弹窗 -->
     <dm-filter
       :visible.sync="showFilter"
-      :options="filterOptions"
+      :options="filterOptions || []"
       :value="filterValue"
       @confirm="handleFilterConfirm"
     />
@@ -301,7 +301,8 @@ const FILTER_CONFIG = {
     { key: 'sort', title: '排序', items: [{ label: '最新', value: 'latest' }, { label: '最热', value: 'hot' }, { label: '当前价从低到高', value: 'price_asc' }, { label: '当前价从高到低', value: 'price_desc' }] },
     { key: 'status', title: '状态', items: [{ label: '全部', value: '' }, { label: '进行中', value: 'ongoing' }, { label: '已结束', value: 'ended' }] },
     { key: 'category', title: '分类', items: [{ label: '全部', value: '' }, { label: '数码', value: 'digital' }, { label: '服饰', value: 'clothing' }, { label: '书籍', value: 'book' }, { label: '生活', value: 'life' }, { label: '其他', value: 'other' }] }
-  ]
+  ],
+  '互助群': []
 }
 
 export default {
@@ -319,7 +320,7 @@ export default {
       noticeInfo: null,
       activityInfo: null,
       recommendInfo: null,
-      tabList: [],
+      tabList: ['最新'],
       postList: [],
       groupMessages: [],
       groupInputText: '',
@@ -338,15 +339,19 @@ export default {
       return FILTER_CONFIG[this.currentTabName] || []
     },
     filterOptions() {
-      return this.currentFilters.map(f => ({
+      const filters = this.currentFilters
+      if (!filters || !Array.isArray(filters) || filters.length === 0) return []
+      return filters.map(f => ({
         title: f.title,
         key: f.key,
-        items: f.items,
+        items: f.items || [],
         type: f.type,
         min: f.min,
         max: f.max,
         unit: f.unit,
-        step: f.step
+        step: f.step,
+        minPlaceholder: f.minPlaceholder,
+        maxPlaceholder: f.maxPlaceholder
       }))
     },
     actualScrollHeight() {
@@ -365,7 +370,7 @@ export default {
   },
   methods: {
     getSystemInfo() {
-      const systemInfo = uni.getSystemInfoSync()
+      const systemInfo = uni.getWindowInfo()
       this.statusBarHeight = systemInfo.statusBarHeight
       const searchBarHeight = uni.upx2px(104)
       const tabBarHeight = uni.upx2px(100)
@@ -441,7 +446,7 @@ export default {
       uni.navigateTo({ url: '/pages/search/index' })
     },
     switchCommunity() {
-      uni.showToast({ title: '切换社区', icon: 'none' })
+      uni.navigateTo({ url: '/pages/region/index' })
     },
     handleBannerClick({ item, index }) {
       if (item.url) {

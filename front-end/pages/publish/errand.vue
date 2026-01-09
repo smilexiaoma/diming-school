@@ -209,22 +209,16 @@ export default {
       ]
     }
   },
-  onLoad() {
-    const systemInfo = uni.getSystemInfoSync()
-    this.statusBarHeight = systemInfo.statusBarHeight
-    this.calcRightSafeArea()
-    this.calcScrollHeight()
-  },
   methods: {
     calcRightSafeArea() {
       // #ifdef MP-WEIXIN
       const menuButtonInfo = uni.getMenuButtonBoundingClientRect()
-      const systemInfo = uni.getSystemInfoSync()
+      const systemInfo = uni.getWindowInfo()
       this.rightSafeArea = systemInfo.windowWidth - menuButtonInfo.left + 10
       // #endif
     },
     calcScrollHeight() {
-      const systemInfo = uni.getSystemInfoSync()
+      const systemInfo = uni.getWindowInfo()
       const navBarHeight = uni.upx2px(88)
       const submitBarHeight = uni.upx2px(100)
       this.scrollHeight = systemInfo.windowHeight - this.statusBarHeight - navBarHeight - submitBarHeight
@@ -277,7 +271,16 @@ export default {
         uni.showToast({ title: '发布成功', icon: 'success' })
         setTimeout(() => uni.navigateBack(), 1500)
       }, 1000)
+    },
+    initPage() {
+      const systemInfo = uni.getWindowInfo()
+      this.statusBarHeight = systemInfo.statusBarHeight
+      this.calcRightSafeArea()
+      this.calcScrollHeight()
     }
+  },
+  onLoad() {
+    this.initPage()
   }
 }
 </script>
@@ -290,14 +293,28 @@ export default {
 
 .nav-bar {
   background-color: #FFFFFF;
+
   .nav-content {
     position: relative;
     display: flex;
     align-items: center;
     height: 88rpx;
     padding: 0 24rpx;
-    .nav-cancel { font-size: 30rpx; color: #666666; z-index: 10; }
-    .nav-title { position: absolute; left: 50%; transform: translateX(-50%); font-size: 34rpx; color: #333333; font-weight: 600; }
+
+    .nav-cancel {
+      font-size: 30rpx;
+      color: #666666;
+      z-index: 10;
+    }
+
+    .nav-title {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 34rpx;
+      color: #333333;
+      font-weight: 600;
+    }
   }
 }
 
@@ -316,6 +333,7 @@ export default {
   background-color: #FFFFFF;
   border-top: 1rpx solid #F5F5F5;
   z-index: 100;
+
   .submit-btn {
     width: 100%;
     height: 88rpx;
@@ -326,12 +344,16 @@ export default {
     font-weight: 600;
     border: none;
     line-height: 88rpx;
-    &::after { border: none; }
+
+    &::after {
+      border: none;
+    }
   }
 }
 
 .form-section {
   margin-bottom: 24rpx;
+
   .section-title {
     display: block;
     font-size: 28rpx;
@@ -345,6 +367,7 @@ export default {
   border-radius: 8rpx;
   padding: 20rpx;
   background: #FFFFFF;
+
   .content-input {
     width: 100%;
     min-height: 120rpx;
@@ -358,15 +381,18 @@ export default {
   flex-wrap: wrap;
   gap: 16rpx;
   margin-top: 16rpx;
+
   .image-item {
     position: relative;
     width: 120rpx;
     height: 120rpx;
+
     .preview-image {
       width: 100%;
       height: 100%;
       border-radius: 8rpx;
     }
+
     .delete-btn {
       position: absolute;
       top: -10rpx;
@@ -380,6 +406,7 @@ export default {
       justify-content: center;
     }
   }
+
   .add-image {
     width: 120rpx;
     height: 120rpx;
@@ -396,6 +423,7 @@ export default {
   border: 1rpx solid #E5E5E5;
   border-radius: 8rpx;
   overflow: hidden;
+
   .time-option {
     flex: 1;
     height: 80rpx;
@@ -406,7 +434,11 @@ export default {
     color: #666;
     background: #FFFFFF;
     border-right: 1rpx solid #E5E5E5;
-    &:last-child { border-right: none; }
+
+    &:last-child {
+      border-right: none;
+    }
+
     &.active {
       color: #333;
       font-weight: 500;
@@ -416,6 +448,7 @@ export default {
 
 .time-input-box {
   margin-top: 16rpx;
+
   .time-input {
     width: 100%;
     height: 80rpx;
@@ -427,6 +460,7 @@ export default {
     background: #FFFFFF;
     box-sizing: border-box;
   }
+
   .picker-input {
     display: flex;
     align-items: center;
@@ -437,18 +471,24 @@ export default {
   display: flex;
   align-items: center;
   margin-bottom: 16rpx;
+
   .section-title-inline {
     font-size: 28rpx;
     color: #333;
     margin-right: 20rpx;
   }
+
   .contact-types {
     display: flex;
     gap: 20rpx;
+
     .contact-type {
       font-size: 26rpx;
       color: #999;
-      &.active { color: #333; }
+
+      &.active {
+        color: #333;
+      }
     }
   }
 }
@@ -473,6 +513,7 @@ export default {
   border-radius: 8rpx;
   overflow: hidden;
   margin-bottom: 20rpx;
+
   .visibility-tab {
     flex: 1;
     height: 80rpx;
@@ -483,7 +524,11 @@ export default {
     color: #666;
     background: #FFFFFF;
     border-right: 1rpx solid #E5E5E5;
-    &:last-child { border-right: none; }
+
+    &:last-child {
+      border-right: none;
+    }
+
     &.active {
       color: #333;
       font-weight: 500;
@@ -495,6 +540,7 @@ export default {
   display: flex;
   flex-wrap: wrap;
   gap: 16rpx;
+
   .visibility-option {
     padding: 16rpx 28rpx;
     border: 1rpx solid #E5E5E5;
@@ -502,6 +548,7 @@ export default {
     font-size: 26rpx;
     color: #666;
     background: #FFFFFF;
+
     &.active {
       border-color: #007AFF;
       color: #007AFF;

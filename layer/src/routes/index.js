@@ -15,6 +15,7 @@ const messageController = require('../controllers/messageController')
 const searchController = require('../controllers/searchController')
 const userController = require('../controllers/userController')
 const groupController = require('../controllers/groupController')
+const regionController = require('../controllers/regionController')
 
 // 管理后台控制器
 const adminController = require('../controllers/adminController')
@@ -103,6 +104,11 @@ router.post('/message/markRead', messageController.markRead)
 // ==================== 互助群 ====================
 router.get('/group/messages', groupController.getMessages)
 router.post('/group/message/send', groupController.sendMessage)
+
+// ==================== 地区 ====================
+router.get('/region/list', regionController.getList)
+router.get('/region/schools', regionController.getSchools)
+router.get('/region/visible-options', regionController.getVisibleOptions)
 
 // ==================== 用户中心 ====================
 // 我的帖子

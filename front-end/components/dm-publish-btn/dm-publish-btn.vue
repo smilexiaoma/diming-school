@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  name: 'dm-publish-btn',
+  emits: ['click'],
   methods: {
     handleClick() {
       this.$emit('click')

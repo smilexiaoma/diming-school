@@ -1,53 +1,54 @@
 <script>
-import userStore from '@/store/user.js'
+/**
+ * 检查登录状态并处理路由
+ */
+const checkLoginStatus = () => {
+  // 从缓存直接读取登录状态
+  try {
+    const userCache = uni.getStorageSync('user_info')
+    const isLogin = userCache ? JSON.parse(userCache).isLogin : false
+
+    // 获取当前页面栈
+    const pages = getCurrentPages()
+    const currentPage = pages[pages.length - 1]
+    const currentRoute = currentPage ? currentPage.route : ''
+
+    console.log('当前登录状态:', isLogin)
+    console.log('当前页面:', currentRoute)
+
+    // 如果已登录且在登录页，跳转到首页
+    if (isLogin && currentRoute === 'pages/login/index') {
+      console.log('已登录，跳转到首页')
+      setTimeout(() => {
+        uni.reLaunch({
+          url: '/pages/index/index'
+        })
+      }, 100)
+    }
+    // 如果未登录且不在登录页，跳转到登录页
+    else if (!isLogin && currentRoute !== 'pages/login/index') {
+      console.log('未登录，跳转到登录页')
+      setTimeout(() => {
+        uni.reLaunch({
+          url: '/pages/login/index'
+        })
+      }, 100)
+    }
+  } catch (e) {
+    console.error('检查登录状态失败', e)
+  }
+}
 
 export default {
-  onLaunch: function() {
+  onLaunch() {
     console.log('App Launch')
-
-    // 检查登录状态
-    this.checkLoginStatus()
   },
-  onShow: function() {
+  onShow() {
     console.log('App Show')
+    checkLoginStatus()
   },
-  onHide: function() {
+  onHide() {
     console.log('App Hide')
-  },
-  methods: {
-    /**
-     * 检查登录状态并处理路由
-     */
-    checkLoginStatus() {
-      const isLogin = userStore.isLogin()
-
-      // 获取当前页面栈
-      const pages = getCurrentPages()
-      const currentPage = pages[pages.length - 1]
-      const currentRoute = currentPage ? currentPage.route : ''
-
-      console.log('当前登录状态:', isLogin)
-      console.log('当前页面:', currentRoute)
-
-      // 如果已登录且在登录页，跳转到首页
-      if (isLogin && currentRoute === 'pages/login/index') {
-        console.log('已登录，跳转到首页')
-        setTimeout(() => {
-          uni.reLaunch({
-            url: '/pages/index/index'
-          })
-        }, 100)
-      }
-      // 如果未登录且不在登录页，跳转到登录页
-      else if (!isLogin && currentRoute !== 'pages/login/index') {
-        console.log('未登录，跳转到登录页')
-        setTimeout(() => {
-          uni.reLaunch({
-            url: '/pages/login/index'
-          })
-        }, 100)
-      }
-    }
   }
 }
 </script>

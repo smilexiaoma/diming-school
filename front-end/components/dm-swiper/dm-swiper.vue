@@ -22,7 +22,6 @@
 
 <script>
 export default {
-  name: 'dm-swiper',
   props: {
     list: {
       type: Array,
@@ -49,6 +48,7 @@ export default {
       default: true
     }
   },
+  emits: ['change', 'click'],
   methods: {
     handleChange(e) {
       this.$emit('change', e.detail.current)

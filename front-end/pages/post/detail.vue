@@ -189,14 +189,9 @@ export default {
       return userStore.isAdmin()
     }
   },
-  onLoad(options) {
-    this.postId = options.id
-    this.getSystemInfo()
-    this.loadPostDetail()
-  },
   methods: {
     getSystemInfo() {
-      const systemInfo = uni.getSystemInfoSync()
+      const systemInfo = uni.getWindowInfo()
       this.statusBarHeight = systemInfo.statusBarHeight
       this.safeAreaBottom = systemInfo.screenHeight - systemInfo.safeArea.bottom
       const navHeight = uni.upx2px(88)
@@ -208,7 +203,9 @@ export default {
       this.postData = data
       this.commentList = data.comments || []
     },
-    goBack() { uni.navigateBack() },
+    goBack() {
+      uni.navigateBack()
+    },
     showPostAdminMenu() {
       this.showAdminMenu = true
     },
@@ -228,7 +225,7 @@ export default {
       this.showCommentAdminMenu = true
     },
     handleAdminAction(data) {
-      const { action, target, targetUser } = data
+      const { action } = data
 
       switch (action) {
         case AdminAction.DELETE_POST:
@@ -277,13 +274,21 @@ export default {
           uni.showToast({ title: '操作成功', icon: 'success' })
       }
     },
-    handleFollow() { this.postData.isFollowed = !this.postData.isFollowed },
+    handleFollow() {
+      this.postData.isFollowed = !this.postData.isFollowed
+    },
     previewImage(index) {
       uni.previewImage({ urls: this.postData.images, current: index })
     },
-    replyComment(item) { uni.showToast({ title: '回复' + item.nickname, icon: 'none' }) },
-    likeComment(item) { item.likeCount++ },
-    showCommentInput() { uni.showToast({ title: '输入评论', icon: 'none' }) },
+    replyComment(item) {
+      uni.showToast({ title: '回复' + item.nickname, icon: 'none' })
+    },
+    likeComment(item) {
+      item.likeCount++
+    },
+    showCommentInput() {
+      uni.showToast({ title: '输入评论', icon: 'none' })
+    },
     async handleLike() {
       await postApi.like(this.postId)
       this.postData.likeCount++
@@ -292,73 +297,340 @@ export default {
       await postApi.collect(this.postId)
       uni.showToast({ title: '已收藏', icon: 'none' })
     },
-    handleShare() { uni.showToast({ title: '分享', icon: 'none' }) }
+    handleShare() {
+      uni.showToast({ title: '分享', icon: 'none' })
+    },
+    initPage(options) {
+      this.postId = options.id
+      this.getSystemInfo()
+      this.loadPostDetail()
+    }
+  },
+  onLoad(options) {
+    this.initPage(options)
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.page-container { min-height: 100vh; background: #F8F8F8; }
-.nav-bar { background: #FFF;
-  .nav-content { display: flex; align-items: center; justify-content: space-between; height: 88rpx; padding: 0 24rpx;
-    .nav-back { padding: 10rpx; }
-    .nav-title { font-size: 34rpx; color: #333; font-weight: 600; }
-    .nav-placeholder { width: 60rpx; }
-  }
+.page-container {
+  min-height: 100vh;
+  background: #F8F8F8;
 }
-.content-scroll { background: #FFF; }
-.user-section { display: flex; align-items: center; padding: 24rpx;
-  .user-avatar { width: 80rpx; height: 80rpx; border-radius: 50%; margin-right: 16rpx; }
-  .user-info { flex: 1;
-    .user-name-row { display: flex; align-items: center; gap: 8rpx; }
-    .user-name { font-size: 30rpx; color: #333; }
-    .user-title { font-size: 20rpx; color: #FF9500; background: rgba(255,149,0,0.1); padding: 2rpx 8rpx; border-radius: 4rpx; }
-    .post-time { font-size: 24rpx; color: #999; }
-  }
-  .post-tags { display: flex; gap: 8rpx; margin-right: 16rpx;
-    .tag-item { font-size: 20rpx; padding: 4rpx 12rpx; border-radius: 4rpx;
-      &.pinned { color: #FF6B6B; background: rgba(255,107,107,0.1); }
-      &.announcement { color: #FF9500; background: rgba(255,149,0,0.1); }
+
+.nav-bar {
+  background: #FFF;
+
+  .nav-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 88rpx;
+    padding: 0 24rpx;
+
+    .nav-back {
+      padding: 10rpx;
+    }
+
+    .nav-title {
+      font-size: 34rpx;
+      color: #333;
+      font-weight: 600;
+    }
+
+    .nav-placeholder {
+      width: 60rpx;
     }
   }
-  .follow-btn { padding: 12rpx 32rpx; font-size: 26rpx; color: #007AFF; border: 1rpx solid #007AFF; border-radius: 24rpx; }
 }
-.post-content { padding: 0 24rpx 24rpx;
-  .content-text { font-size: 30rpx; color: #333; line-height: 1.8; }
-  .image-list { display: flex; flex-wrap: wrap; gap: 12rpx; margin-top: 20rpx; .content-image { width: 220rpx; height: 220rpx; border-radius: 8rpx; } }
-  .post-location { display: block; margin-top: 16rpx; font-size: 24rpx; color: #999; }
+
+.content-scroll {
+  background: #FFF;
 }
-.interact-section { display: flex; align-items: center; justify-content: space-between; padding: 20rpx 24rpx; border-top: 1rpx solid #F5F5F5; border-bottom: 1rpx solid #F5F5F5;
-  .interact-left { display: flex; }
-  .interact-item { margin-right: 32rpx; font-size: 26rpx; color: #666; }
-  .admin-btn { display: flex; align-items: center; gap: 6rpx; padding: 12rpx 24rpx; background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%); border-radius: 24rpx;
-    text { font-size: 24rpx; color: #FFF; }
+
+.user-section {
+  display: flex;
+  align-items: center;
+  padding: 24rpx;
+
+  .user-avatar {
+    width: 80rpx;
+    height: 80rpx;
+    border-radius: 50%;
+    margin-right: 16rpx;
   }
-}
-.comment-section { padding: 24rpx;
-  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20rpx; }
-  .section-title { font-size: 30rpx; color: #333; font-weight: 600; }
-  .comment-item { display: flex; padding: 20rpx 0; border-bottom: 1rpx solid #F5F5F5;
-    .comment-avatar { width: 64rpx; height: 64rpx; border-radius: 50%; margin-right: 16rpx; flex-shrink: 0; }
-    .comment-main { flex: 1; min-width: 0;
-      .comment-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8rpx;
-        .comment-user { display: flex; align-items: center; gap: 8rpx; flex-wrap: wrap; }
-        .comment-name { font-size: 26rpx; color: #333; }
-        .comment-title { font-size: 18rpx; color: #FF9500; background: rgba(255,149,0,0.1); padding: 2rpx 6rpx; border-radius: 4rpx; }
-        .comment-author { font-size: 18rpx; color: #007AFF; background: rgba(0,122,255,0.1); padding: 2rpx 6rpx; border-radius: 4rpx; }
-        .comment-admin-btn { padding: 8rpx; }
-      }
-      .comment-body { display: flex; align-items: flex-start; gap: 8rpx;
-        .comment-pinned { font-size: 18rpx; color: #FF6B6B; background: rgba(255,107,107,0.1); padding: 2rpx 6rpx; border-radius: 4rpx; flex-shrink: 0; }
-        .comment-text { font-size: 28rpx; color: #333; line-height: 1.6; }
-      }
-      .comment-footer { display: flex; margin-top: 8rpx; .comment-time { font-size: 22rpx; color: #999; margin-right: 24rpx; } .comment-reply { font-size: 22rpx; color: #007AFF; } }
+
+  .user-info {
+    flex: 1;
+
+    .user-name-row {
+      display: flex;
+      align-items: center;
+      gap: 8rpx;
     }
-    .comment-like { display: flex; flex-direction: column; align-items: center; padding-left: 16rpx; .like-count { font-size: 22rpx; color: #999; } }
+
+    .user-name {
+      font-size: 30rpx;
+      color: #333;
+    }
+
+    .user-title {
+      font-size: 20rpx;
+      color: #FF9500;
+      background: rgba(255,149,0,0.1);
+      padding: 2rpx 8rpx;
+      border-radius: 4rpx;
+    }
+
+    .post-time {
+      font-size: 24rpx;
+      color: #999;
+    }
+  }
+
+  .post-tags {
+    display: flex;
+    gap: 8rpx;
+    margin-right: 16rpx;
+
+    .tag-item {
+      font-size: 20rpx;
+      padding: 4rpx 12rpx;
+      border-radius: 4rpx;
+
+      &.pinned {
+        color: #FF6B6B;
+        background: rgba(255,107,107,0.1);
+      }
+
+      &.announcement {
+        color: #FF9500;
+        background: rgba(255,149,0,0.1);
+      }
+    }
+  }
+
+  .follow-btn {
+    padding: 12rpx 32rpx;
+    font-size: 26rpx;
+    color: #007AFF;
+    border: 1rpx solid #007AFF;
+    border-radius: 24rpx;
   }
 }
-.bottom-bar { position: fixed; left: 0; right: 0; bottom: 0; display: flex; align-items: center; padding-top: 16rpx; padding-left: 24rpx; padding-right: 24rpx; padding-bottom: calc(16rpx + env(safe-area-inset-bottom)); background: #FFF; box-shadow: 0 -2rpx 12rpx rgba(0,0,0,0.05); box-sizing: content-box;
-  .comment-input { flex: 1; height: 72rpx; padding: 0 24rpx; background: #F5F5F5; border-radius: 36rpx; font-size: 28rpx; }
-  .action-btns { display: flex; margin-left: 20rpx; .action-item { display: flex; flex-direction: column; align-items: center; margin-left: 24rpx; text { font-size: 20rpx; color: #999; } } }
+
+.post-content {
+  padding: 0 24rpx 24rpx;
+
+  .content-text {
+    font-size: 30rpx;
+    color: #333;
+    line-height: 1.8;
+  }
+
+  .image-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12rpx;
+    margin-top: 20rpx;
+
+    .content-image {
+      width: 220rpx;
+      height: 220rpx;
+      border-radius: 8rpx;
+    }
+  }
+
+  .post-location {
+    display: block;
+    margin-top: 16rpx;
+    font-size: 24rpx;
+    color: #999;
+  }
+}
+
+.interact-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 24rpx;
+  border-top: 1rpx solid #F5F5F5;
+  border-bottom: 1rpx solid #F5F5F5;
+
+  .interact-left {
+    display: flex;
+  }
+
+  .interact-item {
+    margin-right: 32rpx;
+    font-size: 26rpx;
+    color: #666;
+  }
+}
+
+.comment-section {
+  padding: 24rpx;
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20rpx;
+  }
+
+  .section-title {
+    font-size: 30rpx;
+    color: #333;
+    font-weight: 600;
+  }
+
+  .comment-item {
+    display: flex;
+    padding: 20rpx 0;
+    border-bottom: 1rpx solid #F5F5F5;
+
+    .comment-avatar {
+      width: 64rpx;
+      height: 64rpx;
+      border-radius: 50%;
+      margin-right: 16rpx;
+      flex-shrink: 0;
+    }
+
+    .comment-main {
+      flex: 1;
+      min-width: 0;
+
+      .comment-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8rpx;
+
+        .comment-user {
+          display: flex;
+          align-items: center;
+          gap: 8rpx;
+          flex-wrap: wrap;
+        }
+
+        .comment-name {
+          font-size: 26rpx;
+          color: #333;
+        }
+
+        .comment-title {
+          font-size: 18rpx;
+          color: #FF9500;
+          background: rgba(255,149,0,0.1);
+          padding: 2rpx 6rpx;
+          border-radius: 4rpx;
+        }
+
+        .comment-author {
+          font-size: 18rpx;
+          color: #007AFF;
+          background: rgba(0,122,255,0.1);
+          padding: 2rpx 6rpx;
+          border-radius: 4rpx;
+        }
+
+        .comment-admin-btn {
+          padding: 8rpx;
+        }
+      }
+
+      .comment-body {
+        display: flex;
+        align-items: flex-start;
+        gap: 8rpx;
+
+        .comment-pinned {
+          font-size: 18rpx;
+          color: #FF6B6B;
+          background: rgba(255,107,107,0.1);
+          padding: 2rpx 6rpx;
+          border-radius: 4rpx;
+          flex-shrink: 0;
+        }
+
+        .comment-text {
+          font-size: 28rpx;
+          color: #333;
+          line-height: 1.6;
+        }
+      }
+
+      .comment-footer {
+        display: flex;
+        margin-top: 8rpx;
+
+        .comment-time {
+          font-size: 22rpx;
+          color: #999;
+          margin-right: 24rpx;
+        }
+
+        .comment-reply {
+          font-size: 22rpx;
+          color: #007AFF;
+        }
+      }
+    }
+
+    .comment-like {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-left: 16rpx;
+
+      .like-count {
+        font-size: 22rpx;
+        color: #999;
+      }
+    }
+  }
+}
+
+.bottom-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  padding-top: 16rpx;
+  padding-left: 24rpx;
+  padding-right: 24rpx;
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+  background: #FFF;
+  box-shadow: 0 -2rpx 12rpx rgba(0,0,0,0.05);
+  box-sizing: content-box;
+
+  .comment-input {
+    flex: 1;
+    height: 72rpx;
+    padding: 0 24rpx;
+    background: #F5F5F5;
+    border-radius: 36rpx;
+    font-size: 28rpx;
+  }
+
+  .action-btns {
+    display: flex;
+    margin-left: 20rpx;
+
+    .action-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-left: 24rpx;
+
+      text {
+        font-size: 20rpx;
+        color: #999;
+      }
+    }
+  }
 }
 </style>

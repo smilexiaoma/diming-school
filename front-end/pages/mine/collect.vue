@@ -117,7 +117,7 @@ export default {
   },
   methods: {
     getSystemInfo() {
-      const systemInfo = uni.getSystemInfoSync()
+      const systemInfo = uni.getWindowInfo()
       this.statusBarHeight = systemInfo.statusBarHeight
       const navHeight = uni.upx2px(88)
       const tabHeight = uni.upx2px(100)

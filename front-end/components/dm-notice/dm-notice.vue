@@ -24,13 +24,13 @@
 
 <script>
 export default {
-  name: 'dm-notice',
   props: {
     list: {
       type: Array,
       default: () => []
     }
   },
+  emits: ['click'],
   methods: {
     handleClick(item, index) {
       this.$emit('click', { item, index })

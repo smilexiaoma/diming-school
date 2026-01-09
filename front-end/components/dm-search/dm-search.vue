@@ -65,7 +65,7 @@ export default {
       // #ifdef MP-WEIXIN
       // 获取胶囊按钮位置信息
       const menuButtonInfo = uni.getMenuButtonBoundingClientRect()
-      const systemInfo = uni.getSystemInfoSync()
+      const systemInfo = uni.getWindowInfo()
       // 右侧安全距离 = 屏幕宽度 - 胶囊按钮左边界 + 间距
       this.rightSafeArea = systemInfo.windowWidth - menuButtonInfo.left + 10
       // #endif

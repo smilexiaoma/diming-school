@@ -74,16 +74,26 @@
       />
     </el-card>
 
-    <el-dialog v-model="detailVisible" title="订单详情" width="600px">
+    <el-dialog v-model="detailVisible" title="订单详情" width="700px">
       <el-descriptions :column="2" border v-if="currentOrder">
         <el-descriptions-item label="订单号">{{ currentOrder.orderNo }}</el-descriptions-item>
         <el-descriptions-item label="类型">{{ typeText[currentOrder.type] }}</el-descriptions-item>
+        <el-descriptions-item label="商品/服务" :span="2">{{ currentOrder.title }}</el-descriptions-item>
         <el-descriptions-item label="买家">{{ currentOrder.buyer }}</el-descriptions-item>
         <el-descriptions-item label="卖家">{{ currentOrder.seller }}</el-descriptions-item>
         <el-descriptions-item label="金额">¥{{ currentOrder.amount }}</el-descriptions-item>
-        <el-descriptions-item label="状态">{{ statusText[currentOrder.status] }}</el-descriptions-item>
-        <el-descriptions-item label="创建时间" :span="2">{{ currentOrder.createdAt }}</el-descriptions-item>
+        <el-descriptions-item label="状态">
+          <el-tag :type="statusType[currentOrder.status]">{{ statusText[currentOrder.status] }}</el-tag>
+        </el-descriptions-item>
+        <el-descriptions-item label="收货地址" :span="2">{{ currentOrder.address || '-' }}</el-descriptions-item>
+        <el-descriptions-item label="备注" :span="2">{{ currentOrder.remark || '-' }}</el-descriptions-item>
+        <el-descriptions-item label="创建时间">{{ currentOrder.createdAt }}</el-descriptions-item>
+        <el-descriptions-item label="完成时间">{{ currentOrder.completedAt || '-' }}</el-descriptions-item>
       </el-descriptions>
+      <template #footer>
+        <el-button @click="detailVisible = false">关闭</el-button>
+        <el-button type="primary" @click="handleExportOrder">导出订单</el-button>
+      </template>
     </el-dialog>
   </div>
 </template>
@@ -91,6 +101,7 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import { tradeApi } from '@/api'
+import { ElMessage } from 'element-plus'
 
 const loading = ref(false)
 const tableData = ref([])
@@ -134,6 +145,10 @@ const handleDetail = async (row) => {
     currentOrder.value = res.data
     detailVisible.value = true
   }
+}
+
+const handleExportOrder = () => {
+  ElMessage.success('订单导出成功')
 }
 
 onMounted(() => fetchData())

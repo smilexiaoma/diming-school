@@ -116,7 +116,6 @@ exports.getTradeData = async (req, res) => {
 exports.getIncomeData = async (req, res) => {
   try {
     const { days = 7, incomeType, dateRange } = req.query
-    // incomeType: 收入类型(commission/ad/other), dateRange: 自定义日期范围
     const numDays = days === 'custom' ? 30 : Number(days)
     const dates = generateDates(numDays)
     successResponse(res, {
@@ -129,4 +128,26 @@ exports.getIncomeData = async (req, res) => {
   } catch (error) {
     errorResponse(res, error.message)
   }
+}
+
+// 各模块统计
+exports.getModuleStats = async (req, res) => {
+  try {
+    successResponse(res, {
+      post: { total: 1048, today: 23, pending: 5 },
+      vote: { total: 735, today: 12, active: 8 },
+      errand: { total: 580, today: 18, pending: 12 },
+      idle: { total: 484, today: 15, onSale: 320 },
+      love: { total: 300, today: 8, pending: 3 },
+      auction: { total: 156, today: 5, bidding: 12 }
+    })
+  } catch (error) { errorResponse(res, error.message) }
+}
+
+// 数据导出
+exports.exportData = async (req, res) => {
+  try {
+    const { type, dateRange } = req.query
+    successResponse(res, { url: `/export/${type}_${Date.now()}.xlsx` }, '导出成功')
+  } catch (error) { errorResponse(res, error.message) }
 }

@@ -57,6 +57,36 @@ const routes = [
         component: () => import('@/views/content/AIConfig.vue'),
         meta: { title: 'AI审核配置', icon: 'MagicStick' }
       },
+      {
+        path: 'content/audit-history',
+        name: 'AuditHistory',
+        component: () => import('@/views/content/AuditHistory.vue'),
+        meta: { title: '审核历史', icon: 'Clock' }
+      },
+      {
+        path: 'content/post',
+        name: 'PostList',
+        component: () => import('@/views/content/PostList.vue'),
+        meta: { title: '帖子管理', icon: 'Notebook' }
+      },
+      {
+        path: 'content/vote',
+        name: 'VoteList',
+        component: () => import('@/views/content/VoteList.vue'),
+        meta: { title: '投票管理', icon: 'Finished' }
+      },
+      {
+        path: 'content/love',
+        name: 'LoveList',
+        component: () => import('@/views/content/LoveList.vue'),
+        meta: { title: '交友管理', icon: 'Connection' }
+      },
+      {
+        path: 'content/comment',
+        name: 'CommentList',
+        component: () => import('@/views/content/CommentList.vue'),
+        meta: { title: '评论管理', icon: 'ChatLineSquare' }
+      },
       // 交易管理
       {
         path: 'trade/order',
@@ -81,6 +111,24 @@ const routes = [
         name: 'FundFlow',
         component: () => import('@/views/trade/FundFlow.vue'),
         meta: { title: '资金流水', icon: 'Money' }
+      },
+      {
+        path: 'trade/errand',
+        name: 'ErrandList',
+        component: () => import('@/views/trade/ErrandList.vue'),
+        meta: { title: '跑腿管理', icon: 'Van' }
+      },
+      {
+        path: 'trade/idle',
+        name: 'IdleList',
+        component: () => import('@/views/trade/IdleList.vue'),
+        meta: { title: '闲置管理', icon: 'ShoppingCart' }
+      },
+      {
+        path: 'trade/auction',
+        name: 'AuctionList',
+        component: () => import('@/views/trade/AuctionList.vue'),
+        meta: { title: '拍卖管理', icon: 'PriceTag' }
       },
       // 数据统计
       {
@@ -107,6 +155,12 @@ const routes = [
         component: () => import('@/views/statistics/IncomeStatistics.vue'),
         meta: { title: '收入统计', icon: 'Wallet' }
       },
+      {
+        path: 'statistics/module',
+        name: 'ModuleStatistics',
+        component: () => import('@/views/statistics/ModuleStatistics.vue'),
+        meta: { title: '模块统计', icon: 'Grid' }
+      },
       // 系统设置
       {
         path: 'system/permission',
@@ -131,6 +185,54 @@ const routes = [
         name: 'VersionManage',
         component: () => import('@/views/system/VersionManage.vue'),
         meta: { title: '版本管理', icon: 'Upload' }
+      },
+      {
+        path: 'system/message',
+        name: 'MessageManage',
+        component: () => import('@/views/system/MessageManage.vue'),
+        meta: { title: '系统消息', icon: 'Message' }
+      },
+      {
+        path: 'system/chat',
+        name: 'ChatRecord',
+        component: () => import('@/views/system/ChatRecord.vue'),
+        meta: { title: '聊天记录', icon: 'ChatDotRound' }
+      },
+      {
+        path: 'system/group',
+        name: 'GroupManage',
+        component: () => import('@/views/system/GroupManage.vue'),
+        meta: { title: '群管理', icon: 'UserFilled' }
+      },
+      {
+        path: 'system/admin',
+        name: 'AdminManage',
+        component: () => import('@/views/system/AdminManage.vue'),
+        meta: { title: '管理员管理', icon: 'Avatar' }
+      },
+      {
+        path: 'system/log',
+        name: 'OperationLog',
+        component: () => import('@/views/system/OperationLog.vue'),
+        meta: { title: '操作日志', icon: 'Document' }
+      },
+      {
+        path: 'system/banner',
+        name: 'BannerManage',
+        component: () => import('@/views/system/BannerManage.vue'),
+        meta: { title: '轮播图管理', icon: 'Picture' }
+      },
+      {
+        path: 'system/category',
+        name: 'CategoryManage',
+        component: () => import('@/views/system/CategoryManage.vue'),
+        meta: { title: '分类管理', icon: 'Menu' }
+      },
+      {
+        path: 'system/school',
+        name: 'SchoolManage',
+        component: () => import('@/views/system/SchoolManage.vue'),
+        meta: { title: '学校管理', icon: 'School' }
       }
     ]
   }

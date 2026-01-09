@@ -109,3 +109,25 @@ exports.rejectVerify = async (req, res) => {
     errorResponse(res, error.message)
   }
 }
+
+// 编辑用户信息
+exports.update = async (req, res) => {
+  try {
+    const { id } = req.params
+    const { nickname, school, department } = req.body
+    successResponse(res, null, '更新成功')
+  } catch (error) {
+    errorResponse(res, error.message)
+  }
+}
+
+// 分配角色
+exports.assignRole = async (req, res) => {
+  try {
+    const { id } = req.params
+    const { role } = req.body
+    successResponse(res, null, '角色分配成功')
+  } catch (error) {
+    errorResponse(res, error.message)
+  }
+}

@@ -26,15 +26,19 @@
             <el-option label="已拒绝" value="rejected" />
           </el-select>
         </el-form-item>
-        <el-form-item label="发布时间">
-          <el-date-picker v-model="searchForm.dateRange" type="daterange" start-placeholder="开始日期" end-placeholder="结束日期" value-format="YYYY-MM-DD" />
-        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="handleSearch">搜索</el-button>
         </el-form-item>
       </el-form>
 
-      <el-table :data="tableData" v-loading="loading" stripe>
+      <div class="batch-actions" v-if="selectedIds.length > 0">
+        <span>已选择 {{ selectedIds.length }} 项</span>
+        <el-button type="success" size="small" @click="handleBatchApprove">批量通过</el-button>
+        <el-button type="danger" size="small" @click="handleBatchReject">批量拒绝</el-button>
+      </div>
+
+      <el-table :data="tableData" v-loading="loading" stripe @selection-change="handleSelectionChange">
+        <el-table-column type="selection" width="50" />
         <el-table-column prop="id" label="ID" width="80" />
         <el-table-column prop="type" label="类型" width="80">
           <template #default="{ row }">
@@ -121,6 +125,8 @@ const detailVisible = ref(false)
 const rejectVisible = ref(false)
 const currentItem = ref(null)
 const rejectReason = ref('')
+const selectedIds = ref([])
+const isBatchReject = ref(false)
 
 const typeText = { post: '帖子', vote: '投票', errand: '跑腿', idle: '闲置', love: '交友', help: '拍卖' }
 const statusType = { pending: 'warning', approved: 'success', rejected: 'danger' }
@@ -155,14 +161,35 @@ const handleReject = (row) => { currentItem.value = row; rejectReason.value = ''
 
 const confirmReject = async () => {
   if (!rejectReason.value) { ElMessage.warning('请输入拒绝原因'); return }
-  const res = await contentApi.reject(currentItem.value.id, { reason: rejectReason.value })
-  if (res.code === 200) { ElMessage.success('已拒绝'); rejectVisible.value = false; fetchData() }
+  if (isBatchReject.value) {
+    const res = await contentApi.batchReject(selectedIds.value, rejectReason.value)
+    if (res.code === 200) { ElMessage.success(res.message); rejectVisible.value = false; isBatchReject.value = false; fetchData() }
+  } else {
+    const res = await contentApi.reject(currentItem.value.id, { reason: rejectReason.value })
+    if (res.code === 200) { ElMessage.success('已拒绝'); rejectVisible.value = false; fetchData() }
+  }
 }
 
 const handleDelete = async (row) => {
   await ElMessageBox.confirm('确定删除该内容？此操作不可恢复', '警告', { type: 'warning' })
   const res = await contentApi.delete(row.id)
   if (res.code === 200) { ElMessage.success('已删除'); fetchData() }
+}
+
+const handleSelectionChange = (rows) => {
+  selectedIds.value = rows.map(r => r.id)
+}
+
+const handleBatchApprove = async () => {
+  await ElMessageBox.confirm(`确定批量通过 ${selectedIds.value.length} 条内容？`)
+  const res = await contentApi.batchApprove(selectedIds.value)
+  if (res.code === 200) { ElMessage.success(res.message); fetchData() }
+}
+
+const handleBatchReject = () => {
+  isBatchReject.value = true
+  rejectReason.value = ''
+  rejectVisible.value = true
 }
 
 onMounted(() => fetchData())
@@ -175,4 +202,5 @@ onMounted(() => fetchData())
 .text-gray { color: #999; }
 .images-preview { margin-top: 15px; }
 .ai-reason { margin-top: 15px; }
+.batch-actions { margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
 </style>

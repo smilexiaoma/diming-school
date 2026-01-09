@@ -52,3 +52,43 @@ exports.delete = async (req, res) => {
     errorResponse(res, error.message)
   }
 }
+
+// 批量审核通过
+exports.batchApprove = async (req, res) => {
+  try {
+    const { ids } = req.body
+    successResponse(res, null, `已通过 ${ids.length} 条内容`)
+  } catch (error) {
+    errorResponse(res, error.message)
+  }
+}
+
+// 批量审核拒绝
+exports.batchReject = async (req, res) => {
+  try {
+    const { ids, reason } = req.body
+    successResponse(res, null, `已拒绝 ${ids.length} 条内容`)
+  } catch (error) {
+    errorResponse(res, error.message)
+  }
+}
+
+// 获取审核历史
+exports.getAuditHistory = async (req, res) => {
+  try {
+    const { page = 1, pageSize = 10 } = req.query
+    const list = Array.from({ length: 10 }, (_, i) => ({
+      id: i + 1,
+      contentId: 100 + i,
+      contentTitle: `内容标题 ${i + 1}`,
+      contentType: ['post', 'vote', 'idle'][i % 3],
+      action: i % 2 === 0 ? 'approve' : 'reject',
+      reason: i % 2 === 0 ? null : '违规内容',
+      operator: 'admin',
+      createdAt: '2024-01-15 10:00:00'
+    }))
+    successResponse(res, { list, total: 100 })
+  } catch (error) {
+    errorResponse(res, error.message)
+  }
+}

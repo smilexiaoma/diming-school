@@ -32,6 +32,21 @@ const adminRoleController = require('../controllers/adminRoleController')
 const adminSystemController = require('../controllers/adminSystemController')
 const adminNoticeController = require('../controllers/adminNoticeController')
 const adminVersionController = require('../controllers/adminVersionController')
+const adminPostController = require('../controllers/adminPostController')
+const adminVoteController = require('../controllers/adminVoteController')
+const adminErrandController = require('../controllers/adminErrandController')
+const adminIdleController = require('../controllers/adminIdleController')
+const adminLoveController = require('../controllers/adminLoveController')
+const adminAuctionController = require('../controllers/adminAuctionController')
+const adminCommentController = require('../controllers/adminCommentController')
+const adminMessageController = require('../controllers/adminMessageController')
+const adminChatController = require('../controllers/adminChatController')
+const adminGroupController = require('../controllers/adminGroupController')
+const adminAdminController = require('../controllers/adminAdminController')
+const adminLogController = require('../controllers/adminLogController')
+const adminBannerController = require('../controllers/adminBannerController')
+const adminCategoryController = require('../controllers/adminCategoryController')
+const adminSchoolController = require('../controllers/adminSchoolController')
 
 // 健康检查
 router.get('/health', (req, res) => {
@@ -152,12 +167,17 @@ router.post('/admin/user/unban/:id', adminUserController.unban)
 router.get('/admin/user/verify/list', adminUserController.getVerifyList)
 router.post('/admin/user/verify/approve/:id', adminUserController.approveVerify)
 router.post('/admin/user/verify/reject/:id', adminUserController.rejectVerify)
+router.put('/admin/user/:id', adminUserController.update)
+router.post('/admin/user/role/:id', adminUserController.assignRole)
 
 // 内容管理
 router.get('/admin/content/audit/list', adminContentController.getAuditList)
 router.post('/admin/content/approve/:id', adminContentController.approve)
 router.post('/admin/content/reject/:id', adminContentController.reject)
 router.delete('/admin/content/:id', adminContentController.delete)
+router.post('/admin/content/batch-approve', adminContentController.batchApprove)
+router.post('/admin/content/batch-reject', adminContentController.batchReject)
+router.get('/admin/content/audit/history', adminContentController.getAuditHistory)
 
 // 举报管理
 router.get('/admin/report/list', adminReportController.getList)
@@ -191,6 +211,8 @@ router.get('/admin/statistics/user-growth', adminStatisticsController.getUserGro
 router.get('/admin/statistics/active', adminStatisticsController.getActiveData)
 router.get('/admin/statistics/trade', adminStatisticsController.getTradeData)
 router.get('/admin/statistics/income', adminStatisticsController.getIncomeData)
+router.get('/admin/statistics/module', adminStatisticsController.getModuleStats)
+router.get('/admin/statistics/export', adminStatisticsController.exportData)
 
 // 系统设置
 router.get('/admin/role/list', adminRoleController.getRoleList)
@@ -205,5 +227,89 @@ router.delete('/admin/notice/:id', adminNoticeController.delete)
 router.get('/admin/version/list', adminVersionController.getList)
 router.post('/admin/version', adminVersionController.add)
 router.put('/admin/version/:id', adminVersionController.update)
+
+// 帖子管理
+router.get('/admin/post/list', adminPostController.getList)
+router.get('/admin/post/detail/:id', adminPostController.getDetail)
+router.delete('/admin/post/:id', adminPostController.delete)
+router.post('/admin/post/top/:id', adminPostController.setTop)
+router.post('/admin/post/featured/:id', adminPostController.setFeatured)
+
+// 投票管理
+router.get('/admin/vote/list', adminVoteController.getList)
+router.get('/admin/vote/detail/:id', adminVoteController.getDetail)
+router.delete('/admin/vote/:id', adminVoteController.delete)
+router.post('/admin/vote/end/:id', adminVoteController.end)
+
+// 跑腿管理
+router.get('/admin/errand/list', adminErrandController.getList)
+router.get('/admin/errand/detail/:id', adminErrandController.getDetail)
+router.delete('/admin/errand/:id', adminErrandController.delete)
+router.post('/admin/errand/cancel/:id', adminErrandController.cancel)
+
+// 闲置管理
+router.get('/admin/idle/list', adminIdleController.getList)
+router.get('/admin/idle/detail/:id', adminIdleController.getDetail)
+router.delete('/admin/idle/:id', adminIdleController.delete)
+router.post('/admin/idle/offshelf/:id', adminIdleController.offShelf)
+
+// 交友管理
+router.get('/admin/love/list', adminLoveController.getList)
+router.get('/admin/love/detail/:id', adminLoveController.getDetail)
+router.delete('/admin/love/:id', adminLoveController.delete)
+
+// 拍卖管理
+router.get('/admin/auction/list', adminAuctionController.getList)
+router.get('/admin/auction/detail/:id', adminAuctionController.getDetail)
+router.delete('/admin/auction/:id', adminAuctionController.delete)
+router.post('/admin/auction/end/:id', adminAuctionController.end)
+
+// 评论管理
+router.get('/admin/comment/list', adminCommentController.getList)
+router.delete('/admin/comment/:id', adminCommentController.delete)
+router.post('/admin/comment/hide/:id', adminCommentController.hide)
+router.post('/admin/comment/show/:id', adminCommentController.show)
+
+// 消息管理
+router.get('/admin/message/list', adminMessageController.getList)
+router.post('/admin/message/send', adminMessageController.send)
+router.delete('/admin/message/:id', adminMessageController.delete)
+
+// 聊天记录
+router.get('/admin/chat/list', adminChatController.getList)
+router.get('/admin/chat/detail/:id', adminChatController.getDetail)
+
+// 群管理
+router.get('/admin/group/list', adminGroupController.getList)
+router.get('/admin/group/messages/:id', adminGroupController.getMessages)
+router.post('/admin/group/mute/:id', adminGroupController.mute)
+
+// 管理员管理
+router.get('/admin/admin/list', adminAdminController.getList)
+router.post('/admin/admin', adminAdminController.add)
+router.put('/admin/admin/:id', adminAdminController.update)
+router.delete('/admin/admin/:id', adminAdminController.delete)
+router.post('/admin/admin/reset-password/:id', adminAdminController.resetPassword)
+
+// 操作日志
+router.get('/admin/log/list', adminLogController.getList)
+
+// 轮播图管理
+router.get('/admin/banner/list', adminBannerController.getList)
+router.post('/admin/banner', adminBannerController.add)
+router.put('/admin/banner/:id', adminBannerController.update)
+router.delete('/admin/banner/:id', adminBannerController.delete)
+
+// 分类管理
+router.get('/admin/category/list', adminCategoryController.getList)
+router.post('/admin/category', adminCategoryController.add)
+router.put('/admin/category/:id', adminCategoryController.update)
+router.delete('/admin/category/:id', adminCategoryController.delete)
+
+// 学校管理
+router.get('/admin/school/list', adminSchoolController.getList)
+router.post('/admin/school', adminSchoolController.add)
+router.put('/admin/school/:id', adminSchoolController.update)
+router.delete('/admin/school/:id', adminSchoolController.delete)
 
 module.exports = router

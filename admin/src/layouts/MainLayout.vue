@@ -34,7 +34,12 @@
             <span>内容管理</span>
           </template>
           <el-menu-item index="/content/audit">内容审核</el-menu-item>
+          <el-menu-item index="/content/audit-history">审核历史</el-menu-item>
           <el-menu-item index="/content/report">举报处理</el-menu-item>
+          <el-menu-item index="/content/post">帖子管理</el-menu-item>
+          <el-menu-item index="/content/vote">投票管理</el-menu-item>
+          <el-menu-item index="/content/love">交友管理</el-menu-item>
+          <el-menu-item index="/content/comment">评论管理</el-menu-item>
           <el-menu-item index="/content/sensitive">敏感词库</el-menu-item>
           <el-menu-item index="/content/ai-config">AI审核配置</el-menu-item>
         </el-sub-menu>
@@ -45,6 +50,9 @@
             <span>交易管理</span>
           </template>
           <el-menu-item index="/trade/order">订单查询</el-menu-item>
+          <el-menu-item index="/trade/errand">跑腿管理</el-menu-item>
+          <el-menu-item index="/trade/idle">闲置管理</el-menu-item>
+          <el-menu-item index="/trade/auction">拍卖管理</el-menu-item>
           <el-menu-item index="/trade/dispute">交易纠纷</el-menu-item>
           <el-menu-item index="/trade/refund">退款管理</el-menu-item>
           <el-menu-item index="/trade/flow">资金流水</el-menu-item>
@@ -59,6 +67,7 @@
           <el-menu-item index="/statistics/active">活跃度分析</el-menu-item>
           <el-menu-item index="/statistics/trade">交易数据</el-menu-item>
           <el-menu-item index="/statistics/income">收入统计</el-menu-item>
+          <el-menu-item index="/statistics/module">模块统计</el-menu-item>
         </el-sub-menu>
 
         <el-sub-menu index="system">
@@ -66,9 +75,17 @@
             <el-icon><Setting /></el-icon>
             <span>系统设置</span>
           </template>
+          <el-menu-item index="/system/admin">管理员管理</el-menu-item>
           <el-menu-item index="/system/permission">权限管理</el-menu-item>
           <el-menu-item index="/system/config">参数配置</el-menu-item>
+          <el-menu-item index="/system/banner">轮播图管理</el-menu-item>
+          <el-menu-item index="/system/category">分类管理</el-menu-item>
+          <el-menu-item index="/system/school">学校管理</el-menu-item>
           <el-menu-item index="/system/notice">公告发布</el-menu-item>
+          <el-menu-item index="/system/message">系统消息</el-menu-item>
+          <el-menu-item index="/system/chat">聊天记录</el-menu-item>
+          <el-menu-item index="/system/group">群管理</el-menu-item>
+          <el-menu-item index="/system/log">操作日志</el-menu-item>
           <el-menu-item index="/system/version">版本管理</el-menu-item>
         </el-sub-menu>
       </el-menu>

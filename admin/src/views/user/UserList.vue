@@ -57,9 +57,11 @@
           </template>
         </el-table-column>
         <el-table-column prop="createdAt" label="注册时间" width="170" />
-        <el-table-column label="操作" width="180" fixed="right">
+        <el-table-column label="操作" width="250" fixed="right">
           <template #default="{ row }">
             <el-button type="primary" link @click="handleDetail(row)">详情</el-button>
+            <el-button type="warning" link @click="handleEdit(row)">编辑</el-button>
+            <el-button type="info" link @click="handleRole(row)">角色</el-button>
             <el-button v-if="row.status === 'normal'" type="danger" link @click="handleBan(row)">封禁</el-button>
             <el-button v-else type="success" link @click="handleUnban(row)">解封</el-button>
           </template>
@@ -114,6 +116,45 @@
         <el-button type="primary" @click="confirmBan">确认封禁</el-button>
       </template>
     </el-dialog>
+
+    <!-- 编辑弹窗 -->
+    <el-dialog v-model="editVisible" title="编辑用户" width="500px">
+      <el-form :model="editForm" label-width="80px">
+        <el-form-item label="昵称">
+          <el-input v-model="editForm.nickname" placeholder="请输入昵称" />
+        </el-form-item>
+        <el-form-item label="学校">
+          <el-input v-model="editForm.school" placeholder="请输入学校" />
+        </el-form-item>
+        <el-form-item label="院系">
+          <el-input v-model="editForm.department" placeholder="请输入院系" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="editVisible = false">取消</el-button>
+        <el-button type="primary" @click="confirmEdit">保存</el-button>
+      </template>
+    </el-dialog>
+
+    <!-- 角色分配弹窗 -->
+    <el-dialog v-model="roleVisible" title="分配角色" width="500px">
+      <el-form :model="roleForm" label-width="80px">
+        <el-form-item label="用户">{{ currentUser?.nickname }}</el-form-item>
+        <el-form-item label="角色">
+          <el-select v-model="roleForm.role" placeholder="请选择角色">
+            <el-option label="普通用户" value="NONE" />
+            <el-option label="版块管理员" value="SUB_ADMIN" />
+            <el-option label="论坛管理员" value="FORUM_ADMIN" />
+            <el-option label="平台副管理" value="PLATFORM_SUB_ADMIN" />
+            <el-option label="平台管理员" value="PLATFORM_ADMIN" />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="roleVisible = false">取消</el-button>
+        <el-button type="primary" @click="confirmRole">确认</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -126,6 +167,8 @@ const loading = ref(false)
 const tableData = ref([])
 const detailVisible = ref(false)
 const banVisible = ref(false)
+const editVisible = ref(false)
+const roleVisible = ref(false)
 const currentUser = ref(null)
 
 const searchForm = reactive({
@@ -144,6 +187,16 @@ const pagination = reactive({
 const banForm = reactive({
   reason: '',
   duration: 1
+})
+
+const editForm = reactive({
+  nickname: '',
+  school: '',
+  department: ''
+})
+
+const roleForm = reactive({
+  role: 'NONE'
 })
 
 const fetchData = async () => {
@@ -205,6 +258,41 @@ const handleUnban = async (row) => {
   const res = await userApi.unban(row.id)
   if (res.code === 200) {
     ElMessage.success('解封成功')
+    fetchData()
+  }
+}
+
+const handleEdit = async (row) => {
+  const res = await userApi.getDetail(row.id)
+  if (res.code === 200) {
+    currentUser.value = res.data
+    editForm.nickname = res.data.nickname
+    editForm.school = res.data.school
+    editForm.department = res.data.department
+    editVisible.value = true
+  }
+}
+
+const confirmEdit = async () => {
+  const res = await userApi.update(currentUser.value.id, editForm)
+  if (res.code === 200) {
+    ElMessage.success('更新成功')
+    editVisible.value = false
+    fetchData()
+  }
+}
+
+const handleRole = (row) => {
+  currentUser.value = row
+  roleForm.role = row.role || 'NONE'
+  roleVisible.value = true
+}
+
+const confirmRole = async () => {
+  const res = await userApi.assignRole(currentUser.value.id, roleForm)
+  if (res.code === 200) {
+    ElMessage.success('角色分配成功')
+    roleVisible.value = false
     fetchData()
   }
 }

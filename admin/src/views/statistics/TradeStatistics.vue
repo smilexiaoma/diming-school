@@ -17,6 +17,7 @@
               <el-radio-button label="custom">自定义</el-radio-button>
             </el-radio-group>
             <el-date-picker v-if="searchForm.timeRange === 'custom'" v-model="searchForm.dateRange" type="daterange" start-placeholder="开始" end-placeholder="结束" value-format="YYYY-MM-DD" @change="fetchData" />
+            <el-button type="primary" @click="handleExport">导出数据</el-button>
           </div>
         </div>
       </template>
@@ -46,6 +47,7 @@
 import { ref, reactive, onMounted, onUnmounted } from 'vue'
 import * as echarts from 'echarts'
 import { statisticsApi } from '@/api'
+import { ElMessage } from 'element-plus'
 
 const trendChartRef = ref()
 const typeChartRef = ref()
@@ -95,6 +97,11 @@ const updateCharts = (data) => {
     tooltip: { trigger: 'item' },
     series: [{ type: 'pie', radius: '60%', data: data.typeDistribution }]
   })
+}
+
+const handleExport = async () => {
+  const res = await statisticsApi.exportData({ type: 'trade', days: searchForm.timeRange })
+  if (res.code === 200) ElMessage.success('导出成功')
 }
 
 onMounted(() => {

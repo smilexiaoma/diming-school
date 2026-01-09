@@ -93,6 +93,23 @@
         <el-button type="primary" @click="confirmProcess">确认处理</el-button>
       </template>
     </el-dialog>
+
+    <!-- 详情弹窗 -->
+    <el-dialog v-model="detailVisible" title="举报详情" width="600px">
+      <el-descriptions :column="2" border v-if="currentRow">
+        <el-descriptions-item label="举报ID">{{ currentRow.id }}</el-descriptions-item>
+        <el-descriptions-item label="举报类型">{{ typeText[currentRow.type] }}</el-descriptions-item>
+        <el-descriptions-item label="举报人">{{ currentRow.reporter }}</el-descriptions-item>
+        <el-descriptions-item label="被举报人">{{ currentRow.reported }}</el-descriptions-item>
+        <el-descriptions-item label="举报原因" :span="2">{{ currentRow.reason }}</el-descriptions-item>
+        <el-descriptions-item label="举报时间">{{ currentRow.createdAt }}</el-descriptions-item>
+        <el-descriptions-item label="状态">
+          <el-tag :type="currentRow.status === 'pending' ? 'warning' : 'success'">
+            {{ currentRow.status === 'pending' ? '待处理' : '已处理' }}
+          </el-tag>
+        </el-descriptions-item>
+      </el-descriptions>
+    </el-dialog>
   </div>
 </template>
 
@@ -104,6 +121,7 @@ import { ElMessage } from 'element-plus'
 const loading = ref(false)
 const tableData = ref([])
 const processVisible = ref(false)
+const detailVisible = ref(false)
 const currentRow = ref(null)
 
 const typeText = { content: '违规内容', user: '用户行为', trade: '交易纠纷' }
@@ -125,7 +143,7 @@ const fetchData = async () => {
 }
 
 const handleSearch = () => { pagination.page = 1; fetchData() }
-const handleDetail = (row) => { currentRow.value = row }
+const handleDetail = (row) => { currentRow.value = row; detailVisible.value = true }
 
 const handleProcess = (row) => {
   currentRow.value = row
